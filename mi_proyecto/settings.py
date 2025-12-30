@@ -25,6 +25,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Debe ir después de SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -39,7 +40,7 @@ ROOT_URLCONF = 'mi_proyecto.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Apunta a la carpeta templates
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -58,18 +59,9 @@ WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'turipaz_db',
-        'ENFORCE_SCHEMA': False,
+        'NAME': 'Turipaz',
         'CLIENT': {
-            'host': 'mongodb://localhost:27017',
-        }
-    },
-    'registros': {
-        'ENGINE': 'djongo',
-        'NAME': 'registros_db',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': 'mongodb://localhost:27017',
+            'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
         }
     }
 }
@@ -97,23 +89,27 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-import os
-
-# Para archivos estáticos
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+# Whitenoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Configuración de Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'brian.infante135@gmail.com'  # Tu correo de Gmail
-EMAIL_HOST_PASSWORD = 'ixvmgjeqbbrqyimx'  # La contraseña de aplicación de 16 dígitos
+EMAIL_HOST_USER = 'brian.infante135@gmail.com'
+EMAIL_HOST_PASSWORD = 'ixvmgjeqbbrqyimx'
 DEFAULT_FROM_EMAIL = 'Turipaz <brian.infante135@gmail.com>'
