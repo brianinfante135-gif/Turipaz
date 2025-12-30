@@ -1,0 +1,332 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>TURIPAZ - Parque De La Ciencia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/400') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        h2.section-title {
+            font-size: 2rem;
+            color: #3498db;
+            text-align: center;
+            margin: 40px 0 20px;
+            position: relative;
+        }
+        
+        h2.section-title:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #3498db;
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Estilos para imagen destacada */
+        .featured-image {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .main-image {
+            width: 100%;
+            max-height: 600px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .image-caption {
+            margin-top: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Estilos para tarjetas de información */
+        .info-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            padding: 20px;
+            text-align: justify;
+        }
+        
+        .feature-list {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .feature-list li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .feature-list li:before {
+            content: "•";
+            color: #3498db;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Estilos para sección de horarios */
+        .schedule-section {
+            margin: 60px 0;
+        }
+        
+        .schedule-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .schedule-row {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .schedule-row:last-child {
+            border-bottom: none;
+        }
+        
+        .day, .hours {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+        }
+        
+        .day {
+            background-color: #eaf2fd;
+            font-weight: 600;
+            flex: 1;
+            color: #3498db;
+        }
+        
+        .hours {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .schedule-note {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Estilos para mapa */
+        .map-section {
+            margin: 60px 0;
+        }
+        
+        .map-container {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        iframe {
+            display: block;
+        }
+        
+        footer {
+            background-color: #212529;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2.section-title {
+                font-size: 1.8rem;
+            }
+            
+            .info-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            .schedule-row {
+                flex-direction: column;
+            }
+            
+            .day, .hours {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Parque De La Ciencia</h1>
+        <p class="subtitle">Un espacio de recreación, aprendizaje y conexión con la naturaleza</p>
+    </header>
+    
+    <div class="container">
+        <!-- Imagen Destacada -->
+        <div class="featured-image">
+           <img src="{% static 'images/tu6.jpg' %}" alt="Vista panorámica del Parque de la Ciencia" class="main-image">
+
+            <p class="image-caption">Instalaciones principales del Parque de la Ciencia de La Paz</p>
+        </div>
+        
+        <!-- Información Principal -->
+        <div class="info-cards">
+            <div class="card">
+                <div class="card-header">Donde Se Encuentra</div>
+                <div class="card-content">
+                    <p>El municipio de La Paz, ubicado al oriente del Estado de México, es una de las seis regiones mexiquenses que pueden presumir un Parque de la Ciencia dentro de su territorio.</p>
+                    <br>
+                    <p>Estos espacios están diseñados para que niñas, niños, jóvenes y adultos puedan acudir de manera gratuita a desconectarse de la rutina y conectar con la naturaleza a través de diferentes actividades.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Ofrece</div>
+                <div class="card-content">
+                    <p>En el Parque de la Ciencia La Paz, las y los habitantes podrán disfrutar de una obra de más de 140,000 metros cuadrados, equipada con grandes espacios al aire libre para la sana convivencia y la práctica del deporte, entre ellos se encuentran:</p>
+                    <ul class="feature-list">
+                        <li>Áreas infantiles</li>
+                        <li>Eco senderos</li>
+                        <li>Fuente danzante</li>
+                        <li>Jardín botánico</li>
+                        <li>Mirador</li>
+                        <li>Pista de gokarts</li>
+                        <li>Plaza del ADN</li>
+                        <li>Teatro al aire libre</li>
+                        <li>Tirolesa</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Aporta Culturalmente</div>
+                <div class="card-content">
+                    <p>Es importante señalar que este novedoso espacio, al igual que sus otros cinco similares, tienen por objetivo fomentar la recreación y la cultura ambiental dentro de los habitantes del Estado de México.</p>
+                    <br>
+                    <p>Siguiendo esa temática, en este complejo de La Paz podrás encontrar más de seis kilómetros de eco senderos y cuatro aerogeneradores.</p>
+                    <br>
+                    <p>Además, es un espacio cien por ciento Pet friendly, permitiendo que disfrutes de todas sus instalaciones en compañía de tus mascotas.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Horarios -->
+        <div class="schedule-section">
+            <h2 class="section-title">Horarios de Visita</h2>
+            <div class="schedule-card">
+                <div class="schedule-row">
+                    <div class="day">Lunes a Viernes</div>
+                    <div class="hours">9:00 AM - 6:00 PM</div>
+                </div>
+                <div class="schedule-row">
+                    <div class="day">Sábados y Domingos</div>
+                    <div class="hours">8:00 AM - 7:00 PM</div>
+                </div>
+                <div class="schedule-row">
+                    <div class="day">Días Festivos</div>
+                    <div class="hours">10:00 AM - 5:00 PM</div>
+                </div>
+                <div class="schedule-note">
+                    <p>* La entrada es gratuita. Se recomienda verificar horarios especiales durante vacaciones escolares y eventos especiales.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="map-section">
+            <h2 class="section-title">Ubicación</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15051.979553350298!2d-98.96440687714844!3d19.379883500000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1e2ac35ef1bc1%3A0xdd01c7b26e9d8061!2sParque%20de%20la%20Ciencia%20La%20Paz!5e0!3m2!1ses!2smx!4v1715476125661!5m2!1ses!2smx" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 TURIPAZ - Descubre los espacios culturales del Estado de México</p>
+    </footer>
+</body>
+</html>

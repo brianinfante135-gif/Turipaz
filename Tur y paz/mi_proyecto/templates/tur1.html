@@ -1,0 +1,525 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zona Arqueológica - TURIPAZ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      color: #fff;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "images/tu1.jpg" %}');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 1.5rem 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #ff9900;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(135deg, #ff9900, #ff4d00);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 5px 20px rgba(255, 153, 0, 0.5);
+    }
+
+    main {
+      margin-top: 120px;
+      padding: 2rem;
+      background-color: rgba(8, 27, 41, 0.85);
+      border-radius: 15px;
+      box-shadow: 0 0 50px 0 rgba(175, 98, 20, 0.6);
+      border: 2px solid #ff4d00;
+    }
+    .content {
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      color: #ff9900;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      text-align: justify;
+    }
+    
+    .horario {
+      background-color: rgba(255, 77, 0, 0.2);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 2rem 0;
+      text-align: center;
+      border-left: 4px solid #ff9900;
+    }
+    .horario h3 {
+      font-size: 1.8rem;
+      color: #ff9900;
+      margin-bottom: 1rem;
+    }
+    .horario p {
+      font-size: 1.3rem;
+      text-align: center;
+    }
+
+    .reserve-btn {
+      padding: 15px 40px;
+      margin: 1rem;
+      background: linear-gradient(135deg, #ff9900, #ff4d00);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 20px rgba(255, 77, 0, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .reserve-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(255, 77, 0, 0.6);
+      background: linear-gradient(135deg, #ffaa00, #ff6600);
+    }
+
+    .reserve-btn:active {
+      transform: translateY(1px);
+    }
+    
+    .buttons {
+      text-align: center;
+      margin: 2rem 0;
+    }
+    
+    /* Carrusel de imágenes - CORREGIDO */
+    .carousel-wrapper {
+      margin: 2rem 0;
+    }
+
+    .carousel {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 153, 0, 0.5);
+    }
+    
+    .carousel-container {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    
+    .carousel-slide {
+      min-width: 100%;
+      height: 450px;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+    
+    .carousel-controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 10px;
+      pointer-events: none;
+    }
+    
+    .carousel-control {
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: 2px solid #ff9900;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      pointer-events: auto;
+    }
+    
+    .carousel-control:hover {
+      background-color: rgba(255, 77, 0, 0.9);
+      transform: scale(1.1);
+    }
+    
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+      gap: 10px;
+    }
+    
+    .carousel-dot {
+      width: 14px;
+      height: 14px;
+      background-color: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .carousel-dot:hover {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .carousel-dot.active {
+      background-color: #ff9900;
+      border-color: #ff9900;
+      transform: scale(1.3);
+    }
+    
+    /* iframe styles */
+    .iframe-container {
+      position: relative;
+      overflow: hidden;
+      padding-top: 56.25%; /* 16:9 aspect ratio */
+      margin: 2rem 0;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 153, 0, 0.5);
+      border: 2px solid #ff9900;
+    }
+    
+    .iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+
+    /* Mensaje de bienvenida */
+    .welcome-message {
+      text-align: center;
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(255, 153, 0, 0.2), rgba(255, 77, 0, 0.2));
+      border-radius: 10px;
+      border: 2px solid #ff9900;
+      animation: slideInDown 0.5s ease-out;
+    }
+
+    .welcome-message h3 {
+      color: #ff9900;
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .back-btn {
+        position: static;
+        transform: none;
+        display: block;
+        width: fit-content;
+        margin: 10px auto;
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+      }
+      
+      main {
+        padding: 1rem;
+        margin-top: 100px;
+      }
+      
+      .carousel-slide {
+        height: 300px;
+      }
+      
+      .reserve-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+
+      .carousel-control {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="{% url 'inicio' %}" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Volver
+    </a>
+    <h1>TURIPAZ</h1>
+  </header>
+  
+  <div class="container">
+    <main>
+      <section class="content">
+        <h2>Zona Arqueológica Los Reyes La Paz</h2>
+        
+        <div id="welcomeContainer"></div>
+        
+        <p>La zona arqueológica de Los Reyes La Paz es un importante yacimiento piramidal situado en el extremo oriental de Ciudad de México. Está a unos 20 minutos a pie de la estación de metro Los Reyes, en el Estado de México, y es visible desde las laderas de San Miguel Teotongo.</p>
+        
+        <p>Los Reyes Acaquilpan todavía lleva el nombre de la antigua denominación del pueblo que aquí se encontraba.</p>
+        
+        <p>El sitio fue abandonado casi por completo con la invasión española. Los visitantes ven hoy en día la gran base con una pirámide de tres cuerpos escalonados. Estos se construyeron en tres etapas entre 1100-1200 e.c. y de nuevo antes de 1521.</p>
+        
+        <p>La pirámide es una de las pocas orientadas al oeste, por lo que es probable que esté asociada a Huitzilopochtli, la deidad del sol.</p>
+      </section>
+      
+      <section class="horario">
+        <h3><i class="far fa-clock"></i> Horario de visita</h3>
+        <p>Martes a domingo, de 10:00 a 17:00 horas.</p>
+      </section>
+      
+      <div class="carousel-wrapper">
+        <div class="carousel">
+          <div class="carousel-container">
+            <div class="carousel-slide" style="background-image: url('{% static 'images/tu1.jpg' %}');"></div>
+            <div class="carousel-slide" style="background-image: url('{% static 'images/tu12.jpg' %}');"></div>
+            <div class="carousel-slide" style="background-image: url('{% static 'images/tu123.jpg' %}');"></div>
+            <div class="carousel-slide" style="background-image: url('{% static 'images/tu1234.jpg' %}');"></div>
+          </div>
+          
+          <div class="carousel-controls">
+            <button class="carousel-control" id="prevBtn">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-control" id="nextBtn">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="carousel-dots">
+          <span class="carousel-dot active" data-index="0"></span>
+          <span class="carousel-dot" data-index="1"></span>
+          <span class="carousel-dot" data-index="2"></span>
+          <span class="carousel-dot" data-index="3"></span>
+        </div>
+      </div>
+      
+      <div class="iframe-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15063.747429131383!2d-98.9775!3d19.3629!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1e33e2334157f%3A0x4794e114a39b9d77!2sZona%20Arqueol%C3%B3gica%20Los%20Reyes!5e0!3m2!1ses!2smx!4v1683753333184!5m2!1ses!2smx" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+      
+      <div class="buttons">
+        <button class="reserve-btn" onclick="reservar()">
+          <i class="fas fa-calendar-check"></i> Reservar Visita
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Función para reservar
+    function reservar() {
+      const hoy = new Date().toISOString().split('T')[0];
+      const fecha = prompt("Ingresa el día que deseas visitar (formato: AAAA-MM-DD)\nEjemplo: 2025-05-15");
+      
+      if (fecha) {
+        // Verificar formato de fecha
+        if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+          const fechaSeleccionada = new Date(fecha + 'T00:00:00');
+          const fechaHoy = new Date(hoy + 'T00:00:00');
+          
+          if (fechaSeleccionada < fechaHoy) {
+            alert("⚠️ No puedes reservar una fecha pasada. Por favor selecciona una fecha futura.");
+            return;
+          }
+          
+          // Verificar que no sea lunes (día cerrado)
+          const diaSemana = fechaSeleccionada.getDay();
+          if (diaSemana === 1) {
+            alert("⚠️ Lo sentimos, la zona arqueológica está cerrada los lunes. Por favor selecciona otro día.");
+            return;
+          }
+          
+          alert("✅ ¡Tu reserva para el día " + fecha + " ha sido exitosa!\n\n📍 Zona Arqueológica Los Reyes La Paz\n🕐 Horario: 10:00 - 17:00 hrs\n\n¡Te esperamos!");
+          
+          // Guardar reserva en localStorage
+          const reservas = JSON.parse(localStorage.getItem('reservasZonaArqueologica') || '[]');
+          reservas.push({
+            fecha: fecha,
+            destino: 'Zona Arqueológica',
+            timestamp: new Date().toISOString()
+          });
+          localStorage.setItem('reservasZonaArqueologica', JSON.stringify(reservas));
+          
+        } else {
+          alert("❌ El formato de fecha no es válido. Por favor usa el formato AAAA-MM-DD (ejemplo: 2025-05-15)");
+        }
+      } else {
+        alert("⚠️ No ingresaste una fecha. Intenta nuevamente.");
+      }
+    }
+
+    // Carrusel de imágenes - CÓDIGO CORREGIDO
+    const carouselContainer = document.querySelector('.carousel-container');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    let currentIndex = 0;
+    let autoplayInterval;
+    
+    // Función para ir a una diapositiva específica
+    function goToSlide(index) {
+      if (index < 0) {
+        index = slides.length - 1;
+      } else if (index >= slides.length) {
+        index = 0;
+      }
+      
+      currentIndex = index;
+      carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      
+      // Actualizar los puntos indicadores
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+    
+    // Eventos para los botones
+    prevBtn.addEventListener('click', () => {
+      goToSlide(currentIndex - 1);
+      resetAutoplay();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      goToSlide(currentIndex + 1);
+      resetAutoplay();
+    });
+    
+    // Eventos para los puntos indicadores
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const slideIndex = parseInt(dot.getAttribute('data-index'));
+        goToSlide(slideIndex);
+        resetAutoplay();
+      });
+    });
+    
+    // Autoplay del carrusel
+    function startAutoplay() {
+      autoplayInterval = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 5000);
+    }
+    
+    function resetAutoplay() {
+      clearInterval(autoplayInterval);
+      startAutoplay();
+    }
+    
+    // Iniciar autoplay
+    startAutoplay();
+    
+    // Pausar autoplay cuando el usuario interactúa
+    const carousel = document.querySelector('.carousel');
+    carousel.addEventListener('mouseenter', () => {
+      clearInterval(autoplayInterval);
+    });
+    
+    carousel.addEventListener('mouseleave', () => {
+      startAutoplay();
+    });
+    
+    // Verificar si hay un nombre de usuario guardado para dar la bienvenida
+    window.addEventListener('DOMContentLoaded', function() {
+      const username = localStorage.getItem('username');
+      const welcomeContainer = document.getElementById('welcomeContainer');
+      
+      if (username && welcomeContainer) {
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'welcome-message';
+        welcomeDiv.innerHTML = `
+          <h3>
+            <i class="fas fa-user-circle"></i> 
+            ¡Bienvenido, ${username}! Disfruta conociendo nuestra zona arqueológica.
+          </h3>
+        `;
+        welcomeContainer.appendChild(welcomeDiv);
+      }
+    });
+  </script>
+</body>
+</html>

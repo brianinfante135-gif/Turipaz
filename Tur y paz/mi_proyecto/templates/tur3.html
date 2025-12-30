@@ -1,0 +1,720 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TURIPAZ - Estación Santa Marta</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #a833e7;
+            --secondary-color: #d966f3;
+            --text-color: #333333;
+            --light-color: #f9f9f9;
+            --dark-color: #222222;
+            --metro-color: #8d13ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('tu3.jpg');
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--metro-color), var(--secondary-color));
+            color: white;
+            padding: 2.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1600/400');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .metro-badge {
+            display: inline-block;
+            background-color: white;
+            color: var(--metro-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metro-line {
+            display: inline-block;
+            background-color: var(--metro-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        section {
+            padding: 4rem 0;
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .highlight-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .highlight-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .icon-feature {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .card:hover .card-image img {
+            transform: scale(1.05);
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .metro-line-map {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .metro-stations {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .metro-stations::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background-color: var(--metro-color);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        
+        .station {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid var(--metro-color);
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .station.active {
+            width: 30px;
+            height: 30px;
+            background-color: var(--metro-color);
+        }
+        
+        .station-name {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .station-info {
+            display: none;
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            text-align: center;
+            z-index: 3;
+        }
+        
+        .station.active .station-info {
+            display: block;
+        }
+        
+        .route-map {
+            margin: 3rem 0;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            height: 250px;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            color: white;
+            padding: 1rem;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
+        }
+        
+        .location-container {
+            width: 100%;
+            margin: 2rem 0;
+        }
+        
+        .location-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .social-link {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .metro-stations {
+                overflow-x: auto;
+                padding-bottom: 2rem;
+            }
+            
+            .station-name {
+                font-size: 0.8rem;
+            }
+            
+            .gallery-item {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <h1>Santa Marta</h1>
+            <p class="subtitle">Estación de Metro y Sitio Histórico en el límite entre Iztapalapa y La Paz</p>
+            <div class="metro-badge">
+                <span class="metro-line">A</span> Línea A del Metro CDMX
+            </div>
+        </div>
+    </header>
+    
+    <section>
+        <div class="container">
+            <div class="highlight-box">
+                <div class="icon-feature">
+                    <i class="fas fa-train"></i>
+                </div>
+                <h2>Estación Santa Marta</h2>
+                <p>Santa Marta es una de las estaciones que forman parte del Metro de Ciudad de México, perteneciente a la Línea A. Se ubica estratégicamente al oriente de la Ciudad de México y del Estado de México, exactamente en el límite estatal entre la alcaldía Iztapalapa y el municipio de La Paz.</p>
+                <p>Esta estación forma parte del sistema de transporte metropolitano que conecta importantes puntos del oriente de la ciudad, permitiendo a los usuarios trasladarse desde la estación terminal La Paz hasta Pantitlán, facilitando así la movilidad en esta zona densamente poblada.</p>
+            </div>
+            
+            <div class="two-column">
+                <div class="card">
+                    <div class="card-image">
+                       <img src="{% static 'images/aca.webp' %}" alt="Convento de Santa Marta">
+                    </div>
+                    <div class="card-content">
+                        <h3>Convento y Templo Histórico</h3>
+                        <p>Santa Marta es un convento y templo construido sobre los antiguos vestigios del reino de Acatitla. Esta edificación histórica representa un importante patrimonio cultural de la zona, conservando elementos arquitectónicos de gran valor histórico.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-image">
+                        <img src="{% static 'images/mar.jpg' %}" alt="Santa Marta Patrona">
+                    </div>
+                    <div class="card-content">
+                        <h3>Santa Marta: Patrona y Legado</h3>
+                        <p>Santa Martha fue hermana de María Magdalena y de Lázaro. Es considerada patrona de los cocineros, ya que atendía a Jesucristo cuando visitaba su casa. Su figura representa el servicio y la hospitalidad, valores que han sido fundamentales en la cultura de la comunidad local.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section style="background-color: #f4f4f4;">
+        <div class="container">
+            <h2>Ruta del Metro</h2>
+            <div class="metro-line-map">
+                <h3>Línea A: La Paz - Pantitlán</h3>
+                <p>La Línea A del Metro de la Ciudad de México es una de las líneas que conecta el oriente de la ciudad. Esta línea permite a los usuarios trasladarse desde La Paz hasta Pantitlán, pasando por importantes puntos como la estación Santa Marta.</p>
+                
+                <div class="metro-stations">
+                    <div class="station">
+                        <div class="station-name">La Paz</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Los Reyes</div>
+                    </div>
+                    <div class="station active">
+                        <div class="station-name">Santa Marta</div>
+                        <div class="station-info">
+                            <strong>Estación Santa Marta</strong>
+                            <p style="font-size: 0.9rem; margin: 0.5rem 0;">Límite entre Iztapalapa y La Paz</p>
+                        </div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Acatitla</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Peñón Viejo</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Guelatao</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Tepalcates</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Canal de San Juan</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Agrícola Oriental</div>
+                    </div>
+                    <div class="station">
+                        <div class="station-name">Pantitlán</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="route-map">
+                <h3>Rutas de Interés</h3>
+                <div class="image-gallery">
+                    <div class="gallery-item">
+                        <img src="{% static 'images/san.jpg' %}" alt="Ruta Histórica">
+                        <div class="gallery-caption">
+                            <h4>Ruta Histórica</h4>
+                            <p>Recorrido por el templo y vestigios históricos de Acatitla</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item">
+                        <img src="{% static 'images/tacos.jpg' %}" alt="Ruta Gastronómica">
+                        <div class="gallery-caption">
+                            <h4>Ruta Gastronómica</h4>
+                            <p>Lugares emblemáticos para degustar la comida tradicional</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item">
+                       <img src="{% static 'images/ru.jpg' %}" alt="Ruta Cultural">
+                        <div class="gallery-caption">
+                            <h4>Ruta Cultural</h4>
+                            <p>Circuito de murales, arte urbano y expresiones culturales locales</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <div class="container">
+            <h2>Ubicación</h2>
+            <div class="location-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3764.5!2d-98.98!3d19.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce1df71d4f9e99%3A0x745e45e2e25d6826!2sMetro%20Santa%20Marta!5e0!3m2!1ses!2smx!4v1652287500000!5m2!1ses!2smx" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <h3>¿Quieres visitar Santa Marta?</h3>
+                <p>Descubre la riqueza histórica y cultural de este importante lugar en el oriente de la Ciudad de México.</p>
+                <a href="#" class="cta-button" onclick="planVisit()">
+                    <i class="fas fa-map-marked-alt"></i> Planear mi visita
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                
+            </div>
+            <p class="copyright">&copy; 2025 TURIPAZ - Todos los derechos reservados</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Function to handle the visit planning
+        function planVisit() {
+            // Create a modal for planning a visit
+            const modalBackground = document.createElement('div');
+            modalBackground.style.position = 'fixed';
+            modalBackground.style.top = '0';
+            modalBackground.style.left = '0';
+            modalBackground.style.width = '100%';
+            modalBackground.style.height = '100%';
+            modalBackground.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            modalBackground.style.display = 'flex';
+            modalBackground.style.justifyContent = 'center';
+            modalBackground.style.alignItems = 'center';
+            modalBackground.style.zIndex = '1000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '30px';
+            modalContent.style.borderRadius = '10px';
+            modalContent.style.maxWidth = '500px';
+            modalContent.style.width = '90%';
+            
+            // Get current date in YYYY-MM-DD format to set as min date
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+            
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+            
+            modalContent.innerHTML = `
+                <h2 style="text-align:center; margin-bottom:20px; color:#ec823a;">Planear tu Visita a Santa Marta</h2>
+                <div style="margin-bottom:20px;">
+                    <label for="fecha" style="display:block; margin-bottom:5px; font-weight:bold;">Fecha de visita:</label>
+                    <input type="date" id="fecha" min="${formattedToday}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label for="ruta" style="display:block; margin-bottom:5px; font-weight:bold;">Ruta de interés:</label>
+                    <select id="ruta" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                        <option value="">Selecciona una ruta</option>
+                        <option value="historica">Ruta Histórica</option>
+                        <option value="gastronomica">Ruta Gastronómica</option>
+                        <option value="cultural">Ruta Cultural</option>
+                        <option value="personalizada">Ruta Personalizada</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label for="personas" style="display:block; margin-bottom:5px; font-weight:bold;">Número de personas:</label>
+                    <input type="number" id="personas" min="1" value="1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label for="transporte" style="display:block; margin-bottom:5px; font-weight:bold;">Medio de transporte:</label>
+                    <select id="transporte" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                        <option value="metro">Metro</option>
+                        <option value="autobus">Autobús</option>
+                        <option value="auto">Auto particular</option>
+                        <option value="bicicleta">Bicicleta</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label for="nombre" style="display:block; margin-bottom:5px; font-weight:bold;">Nombre:</label>
+                    <input type="text" id="nombre" placeholder="Tu nombre" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label for="email" style="display:block; margin-bottom:5px; font-weight:bold;">Correo electrónico:</label>
+                    <input type="email" id="email" placeholder="ejemplo@correo.com" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                </div>
+                <div style="display:flex; justify-content:center; gap:15px;">
+                    <button id="confirmarVisita" style="background-color:#ec823a; color:white; border:none; padding:10px 20px; border-radius:25px; cursor:pointer; font-weight:bold;">Confirmar</button>
+                    <button id="cancelarVisita" style="background-color:#e0e0e0; color:#333; border:none; padding:10px 20px; border-radius:25px; cursor:pointer; font-weight:bold;">Cancelar</button>
+                </div>
+            `;
+            
+            modalBackground.appendChild(modalContent);
+            document.body.appendChild(modalBackground);
+            
+            // Handle confirm visit
+            document.getElementById('confirmarVisita').addEventListener('click', function() {
+                const fecha = document.getElementById('fecha').value;
+                const ruta = document.getElementById('ruta').value;
+                const nombre = document.getElementById('nombre').value;
+                
+                if(!fecha || !ruta || !nombre) {
+                    alert("Por favor completa todos los campos obligatorios.");
+                    return;
+                }
+                
+                // Format date to DD/MM/YYYY for display
+                const fechaObj = new Date(fecha);
+                const day = String(fechaObj.getDate()).padStart(2, '0');
+                const month = String(fechaObj.getMonth() + 1).padStart(2, '0');
+                const year = fechaObj.getFullYear();
+                const formattedDate = `${day}/${month}/${year}`;
+                
+                // Display success message
+                document.body.removeChild(modalBackground);
+                
+                const successModal = document.createElement('div');
+                successModal.style.position = 'fixed';
+                successModal.style.top = '0';
+                successModal.style.left = '0';
+                successModal.style.width = '100%';
+                successModal.style.height = '100%';
+                successModal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                successModal.style.display = 'flex';
+                successModal.style.justifyContent = 'center';
+                successModal.style.alignItems = 'center';
+                successModal.style.zIndex = '1000';
+                
+                const successContent = document.createElement('div');
+                successContent.style.backgroundColor = 'white';
+                successContent.style.padding = '30px';
+                successContent.style.borderRadius = '10px';
+                successContent.style.maxWidth = '500px';
+                successContent.style.width = '90%';
+                successContent.style.textAlign = 'center';
+                
+                successContent.innerHTML = `
+                    <i class="fas fa-check-circle" style="color:#4CAF50; font-size:60px; margin-bottom:20px;"></i>
+                    <h2 style="color:#ec823a; margin-bottom:20px;">¡Visita Programada!</h2>
+                    <p style="margin-bottom:15px;"><strong>Nombre:</strong> ${nombre}</p>
+                    <p style="margin-bottom:15px;"><strong>Fecha:</strong> ${formattedDate}</p>
+                    <p style="margin-bottom:15px;"><strong>Ruta:</strong> ${document.getElementById('ruta').options[document.getElementById('ruta').selectedIndex].text}</p>
+                    <p style="margin-bottom:15px;"><strong>Personas:</strong> ${document.getElementById('personas').value}</p>
+                    <p style="margin-bottom:15px;"><strong>Transporte:</strong> ${document.getElementById('transporte').options[document.getElementById('transporte').selectedIndex].text}</p>
+                    <p style="margin-bottom:25px;">¡Te esperamos en Santa Marta para tu visita!</p>
+                    <button id="cerrarExito" style="background-color:#ec823a; color:white; border:none; padding:10px 20px; border-radius:25px; cursor:pointer; font-weight:bold;">Cerrar</button>
+                `;
+                
+                successModal.appendChild(successContent);
+                document.body.appendChild(successModal);
+                
+                document.getElementById('cerrarExito').addEventListener('click', function() {
+                    document.body.removeChild(successModal);
+                });
+            });
+            
+            // Handle cancel visit
+            document.getElementById('cancelarVisita').addEventListener('click', function() {
+                document.body.removeChild(modalBackground);
+            });
+        }
+        
+        // Hover effect for stations
+        document.querySelectorAll('.station').forEach(station => {
+            station.addEventListener('mouseenter', function() {
+                this.classList.add('active');
+            });
+            
+            station.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('active') || this.querySelector('.station-name').textContent !== 'Santa Marta') {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

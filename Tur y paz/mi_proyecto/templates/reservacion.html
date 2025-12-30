@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservaciones - TURIPAZ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 153, 0, 0.1);
+            border-radius: 15px;
+            border: 2px solid #ff9900;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #ff9900;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Formulario */
+        .form-section {
+            background: rgba(8, 27, 41, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #ff9900;
+            box-shadow: 0 5px 30px rgba(255, 153, 0, 0.3);
+            height: fit-content;
+        }
+
+        .form-section h2 {
+            color: #ff9900;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #ff9900;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ff9900;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff4d00;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff9900, #ff4d00);
+            color: white;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #ffaa00, #ff6600);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 77, 0, 0.5);
+        }
+
+        .submit-btn i {
+            margin-right: 10px;
+        }
+
+        /* Lista de Reservaciones */
+        .reservations-section {
+            background: rgba(8, 27, 41, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #ff9900;
+            box-shadow: 0 5px 30px rgba(255, 153, 0, 0.3);
+        }
+
+        .reservations-section h2 {
+            color: #ff9900;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 153, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ff9900;
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #ff9900;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff9900;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #ff9900;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .search-bar i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff9900;
+        }
+
+        .reservations-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .reservations-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .reservations-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .reservations-list::-webkit-scrollbar-thumb {
+            background: #ff9900;
+            border-radius: 10px;
+        }
+
+        .reservation-card {
+            background: linear-gradient(135deg, rgba(255, 153, 0, 0.1), rgba(255, 77, 0, 0.1));
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9900;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .reservation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 153, 0, 0.4);
+        }
+
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 153, 0, 0.3);
+        }
+
+        .reservation-id {
+            font-weight: bold;
+            color: #ff9900;
+            font-size: 1.1rem;
+        }
+
+        .reservation-date {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .reservation-body {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .reservation-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reservation-field i {
+            color: #ff9900;
+            width: 20px;
+        }
+
+        .reservation-field strong {
+            color: #ff9900;
+            margin-right: 5px;
+        }
+
+        .reservation-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #45a049;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #da190b;
+        }
+
+        .no-reservations {
+            text-align: center;
+            padding: 40px;
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+
+        .no-reservations i {
+            font-size: 4rem;
+            color: #ff9900;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .reservation-body {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-check"></i> TURIPAZ - Sistema de Reservaciones</h1>
+            <p>Gestión de Reservas Turísticas - Los Reyes La Paz</p>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- Formulario -->
+            <div class="form-section">
+                <h2><i class="fas fa-pen-to-square"></i> Nueva Reservación</h2>
+                <form id="reservationForm">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Nombre Completo *</label>
+                        <input type="text" id="name" required placeholder="Ej: Juan Pérez García">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico *</label>
+                        <input type="email" id="email" required placeholder="ejemplo@correo.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Teléfono *</label>
+                        <input type="tel" id="phone" required placeholder="10 dígitos">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destination"><i class="fas fa-map-marker-alt"></i> Destino *</label>
+                        <select id="destination" required>
+                            <option value="">Selecciona un destino</option>
+                            <option value="Zona Arqueológica">Zona Arqueológica</option>
+                            <option value="Parque Soraya Jiménez">Parque Soraya Jiménez</option>
+                            <option value="Santa Marta">Santa Marta</option>
+                            <option value="Parroquia Divino Salvador">Parroquia Divino Salvador</option>
+                            <option value="Volcán de la Caldera">Volcán de la Caldera</option>
+                            <option value="Parque de la Ciencia">Parque de la Ciencia</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date"><i class="fas fa-calendar"></i> Fecha de Visita *</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="people"><i class="fas fa-users"></i> Número de Personas *</label>
+                        <input type="number" id="people" min="1" max="50" required placeholder="¿Cuántas personas?">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comments"><i class="fas fa-comment"></i> Comentarios</label>
+                        <textarea id="comments" placeholder="Información adicional..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Guardar Reservación
+                    </button>
+                </form>
+            </div>
+
+            <!-- Lista de Reservaciones -->
+            <div class="reservations-section">
+                <h2><i class="fas fa-list"></i> Reservaciones Registradas</h2>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <i class="fas fa-ticket-alt"></i>
+                        <div class="number" id="totalReservations">0</div>
+                        <div class="label">Total Reservas</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="number" id="totalPeople">0</div>
+                        <div class="label">Total Visitantes</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-day"></i>
+                        <div class="number" id="todayReservations">0</div>
+                        <div class="label">Hoy</div>
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Buscar por nombre, destino o fecha...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div class="reservations-list" id="reservationsList">
+                    <div class="no-reservations">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No hay reservaciones registradas</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Completa el formulario para agregar tu primera reservación</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array para almacenar reservaciones
+        let reservations = [];
+        let reservationIdCounter = 1;
+
+        // Inicializar fecha mínima
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+        // Cargar datos del localStorage al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            loadReservationsFromStorage();
+            updateStats();
+            displayReservations();
+        });
+
+        // Guardar en localStorage
+        function saveToStorage() {
+            const data = {
+                reservations: reservations,
+                counter: reservationIdCounter
+            };
+            localStorage.setItem('turipazReservations', JSON.stringify(data));
+        }
+
+        // Cargar desde localStorage
+        function loadReservationsFromStorage() {
+            const stored = localStorage.getItem('turipazReservations');
+            if (stored) {
+                const data = JSON.parse(stored);
+                reservations = data.reservations || [];
+                reservationIdCounter = data.counter || 1;
+            }
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('reservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const reservation = {
+                id: reservationIdCounter++,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                destination: document.getElementById('destination').value,
+                date: document.getElementById('date').value,
+                people: parseInt(document.getElementById('people').value),
+                comments: document.getElementById('comments').value,
+                createdAt: new Date().toLocaleString('es-MX')
+            };
+
+            reservations.unshift(reservation);
+            saveToStorage();
+            updateStats();
+            displayReservations();
+
+            // Limpiar formulario
+            this.reset();
+
+            // Mostrar mensaje de éxito
+            alert('¡Reservación guardada exitosamente!', 'success');
+        // Reemplaza el <script> completo de tu HTML con este código
+// Este script se comunica con la API de Django en lugar de localStorage
+
+// Array para almacenar reservaciones (cargadas desde el servidor)
+let reservations = [];
+
+// Obtener CSRF token de Django
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+// Inicializar fecha mínima
+document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+// Cargar datos al iniciar
+window.addEventListener('DOMContentLoaded', () => {
+    loadReservations();
+    loadStats();
+});
+
+// Cargar reservaciones desde el servidor
+async function loadReservations() {
+    try {
+        const response = await fetch('/api/reservaciones/');
+        const data = await response.json();
+        
+        if (data.success) {
+            reservations = data.reservations;
+            displayReservations();
+            updateStatsDisplay();
+        }
+    } catch (error) {
+        console.error('Error al cargar reservaciones:', error);
+        showNotification('Error al cargar las reservaciones', 'error');
+    }
+}
+
+// Cargar estadísticas desde el servidor
+async function loadStats() {
+    try {
+        const response = await fetch('/api/estadisticas/');
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('totalReservations').textContent = data.stats.totalReservations;
+            document.getElementById('totalPeople').textContent = data.stats.totalPeople;
+            document.getElementById('todayReservations').textContent = data.stats.todayReservations;
+        }
+    } catch (error) {
+        console.error('Error al cargar estadísticas:', error);
+    }
+}
+
+// Manejar envío del formulario
+document.getElementById('reservationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        destination: document.getElementById('destination').value,
+        date: document.getElementById('date').value,
+        people: parseInt(document.getElementById('people').value),
+        comments: document.getElementById('comments').value
+    };
+    
+    try {
+        const response = await fetch('/api/reservaciones/crear/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('¡Reservación guardada exitosamente!', 'success');
+            this.reset();
+            loadReservations();
+            loadStats();
+        } else {
+            showNotification(data.message || 'Error al guardar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al conectar con el servidor', 'error');
+    }
+});
+
+// Mostrar reservaciones
+function displayReservations(filteredReservations = null) {
+    const list = document.getElementById('reservationsList');
+    const dataToDisplay = filteredReservations || reservations;
+    
+    if (dataToDisplay.length === 0) {
+        list.innerHTML = `
+            <div class="no-reservations">
+                <i class="fas fa-clipboard-list"></i>
+                <p>No hay reservaciones registradas</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Completa el formulario para agregar tu primera reservación</p>
+            </div>
+        `;
+        return;
+    }
+    
+    list.innerHTML = dataToDisplay.map(res => `
+        <div class="reservation-card">
+            <div class="reservation-header">
+                <span class="reservation-id">
+                    <i class="fas fa-hashtag"></i> Reserva #${res.id.substring(0, 8)}
+                </span>
+                <span class="reservation-date">
+                    <i class="fas fa-clock"></i> ${res.createdAt}
+                </span>
+            </div>
+            <div class="reservation-body">
+                <div class="reservation-field">
+                    <i class="fas fa-user"></i>
+                    <span><strong>Nombre:</strong> ${res.name}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-envelope"></i>
+                    <span><strong>Email:</strong> ${res.email}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-phone"></i>
+                    <span><strong>Teléfono:</strong> ${res.phone}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span><strong>Destino:</strong> ${res.destination}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-calendar"></i>
+                    <span><strong>Fecha:</strong> ${formatDate(res.date)}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-users"></i>
+                    <span><strong>Personas:</strong> ${res.people}</span>
+                </div>
+            </div>
+            ${res.comments ? `
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 153, 0, 0.3);">
+                    <i class="fas fa-comment" style="color: #ff9900;"></i>
+                    <span style="margin-left: 8px;">${res.comments}</span>
+                </div>
+            ` : ''}
+            <div class="reservation-actions">
+                <button class="btn-edit" onclick="editReservation('${res.id}')">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-delete" onclick="deleteReservation('${res.id}')">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Actualizar estadísticas en pantalla
+function updateStatsDisplay() {
+    const totalReservations = reservations.length;
+    const totalPeople = reservations.reduce((sum, res) => sum + res.people, 0);
+    const today = new Date().toISOString().split('T')[0];
+    const todayReservations = reservations.filter(res => res.date === today).length;
+    
+    document.getElementById('totalReservations').textContent = totalReservations;
+    document.getElementById('totalPeople').textContent = totalPeople;
+    document.getElementById('todayReservations').textContent = todayReservations;
+}
+
+// Búsqueda en tiempo real
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    if (searchTerm === '') {
+        displayReservations();
+        return;
+    }
+    
+    const filtered = reservations.filter(res => 
+        res.name.toLowerCase().includes(searchTerm) ||
+        res.destination.toLowerCase().includes(searchTerm) ||
+        res.date.includes(searchTerm) ||
+        res.email.toLowerCase().includes(searchTerm)
+    );
+    
+    displayReservations(filtered);
+});
+
+// Eliminar reservación
+async function deleteReservation(id) {
+    if (!confirm('¿Estás seguro de eliminar esta reservación?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/reservaciones/${id}/eliminar/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Reservación eliminada', 'success');
+            loadReservations();
+            loadStats();
+        } else {
+            showNotification(data.message || 'Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al conectar con el servidor', 'error');
+    }
+}
+
+// Editar reservación (llena el formulario)
+function editReservation(id) {
+    const reservation = reservations.find(res => res.id === id);
+    if (reservation) {
+        document.getElementById('name').value = reservation.name;
+        document.getElementById('email').value = reservation.email;
+        document.getElementById('phone').value = reservation.phone;
+        document.getElementById('destination').value = reservation.destination;
+        document.getElementById('date').value = reservation.date;
+        document.getElementById('people').value = reservation.people;
+        document.getElementById('comments').value = reservation.comments;
+        
+        // Eliminar la reservación antigua
+        deleteReservation(id);
+        
+        // Scroll al formulario
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showNotification('Edita los datos y guarda nuevamente', 'info');
+    }
+}
+
+// Formatear fecha
+function formatDate(dateString) {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('es-MX', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+// Notificaciones
+function showNotification(message, type) {
+    const colors = {
+        success: '#4CAF50',
+        error: '#f44336',
+        info: '#ff9900'
+    };
+    
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type]};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideInRight 0.3s;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Agregar animaciones CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+    </script>
+</body>
+</html>

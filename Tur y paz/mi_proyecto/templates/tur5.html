@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>TURIPAZ - Volcán de La Caldera</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/400') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        h2.section-title {
+            font-size: 2rem;
+            color: #2b7a78;
+            text-align: center;
+            margin: 40px 0 20px;
+            position: relative;
+        }
+        
+        h2.section-title:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #2b7a78;
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Estilos para imagen destacada */
+        .featured-image {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .main-image {
+            width: 100%;
+            max-height: 600px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .image-caption {
+            margin-top: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Estilos para tarjetas de información */
+        .info-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: #2b7a78;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            padding: 20px;
+            text-align: justify;
+        }
+        
+        /* Estilos para sección de horarios */
+        .schedule-section {
+            margin: 60px 0;
+        }
+        
+        .schedule-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .schedule-row {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .schedule-row:last-child {
+            border-bottom: none;
+        }
+        
+        .day, .hours {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+        }
+        
+        .day {
+            background-color: #f1f8f8;
+            font-weight: 600;
+            flex: 1;
+            color: #2b7a78;
+        }
+        
+        .hours {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .schedule-note {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Estilos para mapa */
+        .map-section {
+            margin: 60px 0;
+        }
+        
+        .map-container {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        iframe {
+            display: block;
+        }
+        
+        footer {
+            background-color: #212529;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2.section-title {
+                font-size: 1.8rem;
+            }
+            
+            .info-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            .schedule-row {
+                flex-direction: column;
+            }
+            
+            .day, .hours {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Volcán de La Caldera</h1>
+        <p class="subtitle">Una maravilla natural en la frontera entre CDMX y Estado de México</p>
+    </header>
+    
+    <div class="container">
+        <!-- Imagen Destacada -->
+        <div class="featured-image">
+           <img src="{% static 'images/tu61.jpg' %}" alt="Vista panorámica del Volcán La Caldera" class="main-image">
+
+            <p class="image-caption">Vista panorámica del doble cráter del Volcán La Caldera</p>
+        </div>
+        
+        <!-- Información Principal -->
+        <div class="info-cards">
+            <div class="card">
+                <div class="card-header">Lugar De Origen</div>
+                <div class="card-content">
+                    <p>El volcán de La Caldera está ubicado en la frontera entre Ciudad de México y el Estado de México. Se puede apreciar durante los viajes hacia el sur del país, saliendo por la carretera hacia Puebla, la cual bordea el flanco occidental del volcán.</p>
+                    <br>
+                    <p>Su cima es hoy una de las más destacadas desde la Línea 2 del Cablebús, especialmente al llegar a San Miguel Teotongo. Actualmente, es un área natural protegida y un lugar popular para el senderismo.</p>
+                    <br>
+                    <p>Con un cráter doble bastante distintivo, es probablemente el volcán más famoso de la cadena que conforma la Sierra de Santa Catarina.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Historia</div>
+                <div class="card-content">
+                    <p>El doble cráter es el resultado de una temprana explosión causada por el contacto del agua con la lava fundida. Esto probablemente ocurrió hace unos 60 millones de años.</p>
+                    <br>
+                    <p>Hoy se llama la Caldera, pero su antiguo nombre era Cuexomatl. Con sus 2,400 metros sobre el nivel del mar, no es el más alto de la sierra, sin embargo, es uno de los más fáciles y gratificantes de escalar.</p>
+                    <br>
+                    <p>Los excursionistas deberán tener cuidado con las serpientes y los escorpiones, que habitan en las laderas. El volcán también es frecuentado por aves y roedores.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Cómo Llegar</div>
+                <div class="card-content">
+                    <p>Rodear ambos cráteres a pie (los senderos están razonablemente bien marcados), lleva unos 90 minutos. Llegar a la base de La Caldera desde el Metro La Paz lleva unos 25 minutos a pie.</p>
+                    <br>
+                    <p>Los taxis o moto-taxis, ampliamente disponibles fuera del Metro, pueden reducir significativamente ese tiempo.</p>
+                    <br>
+                    <p>Se recomienda llevar agua suficiente, protección solar y calzado adecuado para senderismo.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Horarios -->
+        <div class="schedule-section">
+            <h2 class="section-title">Horarios de Visita</h2>
+            <div class="schedule-card">
+                <div class="schedule-row">
+                    <div class="day">Lunes a Viernes</div>
+                    <div class="hours">8:00 AM - 6:00 PM</div>
+                </div>
+                <div class="schedule-row">
+                    <div class="day">Sábados y Domingos</div>
+                    <div class="hours">7:00 AM - 7:00 PM</div>
+                </div>
+                <div class="schedule-row">
+                    <div class="day">Días Festivos</div>
+                    <div class="hours">8:00 AM - 5:00 PM</div>
+                </div>
+                <div class="schedule-note">
+                    <p>* Se recomienda llegar temprano para disfrutar del mejor clima y vista. Última entrada 2 horas antes del cierre.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="map-section">
+            <h2 class="section-title">Ubicación</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15057.470476841391!2d-99.01971347726834!3d19.35142001222699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1e32f76255555%3A0x504c1b4e548c408a!2sLa%20Caldera%2C%20Mexico%20City%2C%20CDMX!5e0!3m2!1sen!2smx!4v1615000000000!5m2!1sen!2smx" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 TURIPAZ - Descubre la belleza natural de México</p>
+    </footer>
+</body>
+</html>
