@@ -60,8 +60,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'Turipaz',
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
+            'maxPoolSize': 1,  # Solo 1 conexión para ahorrar memoria
+            'minPoolSize': 0,
+            'maxIdleTimeMS': 45000,
+            'serverSelectionTimeoutMS': 10000,
+            'socketTimeoutMS': 45000,
+            'connectTimeoutMS': 10000,
+            'retryWrites': True,
+            'retryReads': True,
         }
     }
 }
@@ -109,3 +118,35 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+# Configuración para producción en Render
+if not DEBUG:
+    # Seguridad
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # Optimización de sesiones
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+    SESSION_COOKIE_AGE = 86400  # 24 horas
+    
+    # WhiteNoise para archivos estáticos
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Logging para debug
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
