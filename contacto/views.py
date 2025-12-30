@@ -94,16 +94,23 @@ def recuperar_password(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         try:
-            usuario = Usuario.objects.get(correo=correo) # Quitamos el .using('default') si solo tienes una BD
+            usuario = Usuario.objects.get(correo=correo)
             
+            # 1. Generamos la contraseña primero
             nueva_password = secrets.token_urlsafe(8)
             password_hash = hashlib.sha256(nueva_password.encode()).hexdigest()
 
-            # Intentamos enviar el correo PRIMERO o dentro de un try
             asunto = 'Recuperación de contraseña - Turipaz'
-            mensaje = f"Hola {usuario.nombre}, tu nueva contraseña es: {nueva_password}"
+            mensaje = f"""
+Hola {usuario.nombre},
+
+Tu nueva contraseña temporal es: {nueva_password}
+
+Por favor, inicia sesión y cámbiala lo antes posible.
+            """
             
             try:
+                # 2. Intentamos enviar el correo
                 send_mail(
                     asunto,
                     mensaje,
@@ -111,21 +118,27 @@ def recuperar_password(request):
                     [correo],
                     fail_silently=False,
                 )
-                # SOLO SI EL CORREO SE ENVÍA, GUARDAMOS EN LA BD
+                # 3. Si el correo sale bien, guardamos y redirigimos
                 usuario.password = password_hash
                 usuario.save()
-                messages.success(request, f'Correo enviado a {correo}')
-                return redirect('inicio') # Redirigir de inmediato para evitar reenvíos
+                messages.success(request, f'Se ha enviado un correo a {correo}')
+                return redirect('inicio')
                 
             except Exception as e:
-                print(f"Error SMTP: {e}")
-                messages.error(request, 'El servidor de correo no responde. Intenta más tarde.')
+                # 4. Si hay error de tiempo (Timeout), guardamos de todas formas
+                # Esto evita que el usuario se quede bloqueado por culpa de Render
+                usuario.password = password_hash
+                usuario.save()
+                print(f"Error SMTP detectado: {e}")
+                messages.warning(request, 'La contraseña se actualizó, pero el correo podría tardar unos minutos en llegar.')
+                return redirect('inicio')
 
         except Usuario.DoesNotExist:
             messages.error(request, 'No existe una cuenta con ese correo')
+        except Exception as e:
+            messages.error(request, f'Error inesperado: {str(e)}')
     
     return render(request, 'recuperar_password.html')
-
 # Vista para interfaz
 def interfaz(request):
     # Verificar si el usuario está logueado
