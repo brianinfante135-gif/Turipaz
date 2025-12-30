@@ -94,23 +94,24 @@ def recuperar_password(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         try:
+            # Buscamos al usuario por correo
             usuario = Usuario.objects.get(correo=correo)
             
-            # 1. Generamos la contraseña primero
+            # 1. Generamos la nueva contraseña temporal
             nueva_password = secrets.token_urlsafe(8)
             password_hash = hashlib.sha256(nueva_password.encode()).hexdigest()
 
+            # 2. GUARDADO PRIORITARIO: Cambiamos la clave en la BD de inmediato
+            # Esto asegura que el usuario pueda entrar aunque el correo tarde
+            usuario.password = password_hash
+            usuario.save()
+
+            # 3. Preparamos el mensaje
             asunto = 'Recuperación de contraseña - Turipaz'
-            mensaje = f"""
-Hola {usuario.nombre},
-
-Tu nueva contraseña temporal es: {nueva_password}
-
-Por favor, inicia sesión y cámbiala lo antes posible.
-            """
+            mensaje = f"Hola {usuario.nombre}, tu contraseña temporal es: {nueva_password}"
             
             try:
-                # 2. Intentamos enviar el correo
+                # 4. Intentamos enviar el correo
                 send_mail(
                     asunto,
                     mensaje,
@@ -118,20 +119,14 @@ Por favor, inicia sesión y cámbiala lo antes posible.
                     [correo],
                     fail_silently=False,
                 )
-                # 3. Si el correo sale bien, guardamos y redirigimos
-                usuario.password = password_hash
-                usuario.save()
                 messages.success(request, f'Se ha enviado un correo a {correo}')
-                return redirect('inicio')
-                
             except Exception as e:
-                # 4. Si hay error de tiempo (Timeout), guardamos de todas formas
-                # Esto evita que el usuario se quede bloqueado por culpa de Render
-                usuario.password = password_hash
-                usuario.save()
-                print(f"Error SMTP detectado: {e}")
-                messages.warning(request, 'La contraseña se actualizó, pero el correo podría tardar unos minutos en llegar.')
-                return redirect('inicio')
+                # Si Gmail falla o tarda mucho, el usuario ya tiene su clave cambiada
+                print(f"Error en envío de correo (pero clave guardada): {e}")
+                messages.warning(request, 'La clave se cambió, pero hubo un retraso con el correo. Intenta revisar en unos minutos.')
+            
+            # 5. Redirigimos rápido al inicio para evitar el Error 502 de Render
+            return redirect('inicio')
 
         except Usuario.DoesNotExist:
             messages.error(request, 'No existe una cuenta con ese correo')
