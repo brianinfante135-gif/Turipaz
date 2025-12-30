@@ -10,13 +10,7 @@ SECRET_KEY = 'django-insecure-tu-clave-secreta-aqui'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-import os
-
-# ALLOWED_HOSTS
-ALLOWED_HOSTS = ['*']
-
-# Para Gunicorn
-WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
+ALLOWED_HOSTS = ['*'] 
 
 # Application definition
 INSTALLED_APPS = [
@@ -58,6 +52,7 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 
 # Database
 DATABASES = {
