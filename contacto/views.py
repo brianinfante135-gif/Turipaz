@@ -76,17 +76,20 @@ def recuperar_password(request):
             usuario.password = password_hash
             usuario.save()
 
+            # 2. PRINT DE SEGURIDAD (Aparecerá en los logs de Render)
+            print(f"--- SEGURIDAD: CLAVE PARA {correo} ES {nueva_password} ---")
+
             asunto = 'Recuperación de contraseña - Turipaz'
             mensaje = f"Hola {usuario.nombre}, tu contraseña temporal es: {nueva_password}"
             
-            # 2. LANZAR HILO (Thread) PARA ENVÍO INSTANTÁNEO
+            # 3. ENVÍO EN SEGUNDO PLANO
             hilo = threading.Thread(
                 target=enviar_correo_async,
                 args=(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, correo)
             )
             hilo.start()
 
-            # 3. REDIRIGIR DE INMEDIATO (Evita el Error 502)
+            # 4. REDIRECCIÓN INMEDIATA
             messages.success(request, f'Se está procesando el envío a {correo}.')
             return redirect('inicio')
 
