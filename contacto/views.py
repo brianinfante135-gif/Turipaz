@@ -88,55 +88,41 @@ def registro(request):
     return render(request, 'registro.html')
 
 # Vista para recuperar contraseña
+# ... (tus otros imports)
+
 def recuperar_password(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
-        
         try:
-            usuario = Usuario.objects.using('default').get(correo=correo)
+            usuario = Usuario.objects.get(correo=correo) # Quitamos el .using('default') si solo tienes una BD
             
-            # Generar nueva contraseña temporal
             nueva_password = secrets.token_urlsafe(8)
-            
-            # Encriptar la nueva contraseña
             password_hash = hashlib.sha256(nueva_password.encode()).hexdigest()
-            
-            # Actualizar la contraseña en la base de datos
-            usuario.password = password_hash
-            usuario.save(using='default')
-            
-            # Enviar correo con la nueva contraseña
+
+            # Intentamos enviar el correo PRIMERO o dentro de un try
             asunto = 'Recuperación de contraseña - Turipaz'
-            mensaje = f"""
-Hola {usuario.nombre} {usuario.apellido},
-
-Has solicitado recuperar tu contraseña de Turipaz.
-
-Tu nueva contraseña temporal es: {nueva_password}
-
-Usuario: {usuario.username}
-Contraseña temporal: {nueva_password}
-
-Por favor, inicia sesión con esta contraseña y cámbiala por una nueva.
-
-Saludos,
-Equipo Turipaz
-            """
+            mensaje = f"Hola {usuario.nombre}, tu nueva contraseña es: {nueva_password}"
             
-            send_mail(
-                asunto,
-                mensaje,
-                settings.DEFAULT_FROM_EMAIL,
-                [correo],
-                fail_silently=False,
-            )
-            
-            messages.success(request, f'Se ha enviado un correo a {correo} con tu nueva contraseña')
-            
+            try:
+                send_mail(
+                    asunto,
+                    mensaje,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [correo],
+                    fail_silently=False,
+                )
+                # SOLO SI EL CORREO SE ENVÍA, GUARDAMOS EN LA BD
+                usuario.password = password_hash
+                usuario.save()
+                messages.success(request, f'Correo enviado a {correo}')
+                return redirect('inicio') # Redirigir de inmediato para evitar reenvíos
+                
+            except Exception as e:
+                print(f"Error SMTP: {e}")
+                messages.error(request, 'El servidor de correo no responde. Intenta más tarde.')
+
         except Usuario.DoesNotExist:
             messages.error(request, 'No existe una cuenta con ese correo')
-        except Exception as e:
-            messages.error(request, f'Error al enviar el correo: {str(e)}')
     
     return render(request, 'recuperar_password.html')
 
