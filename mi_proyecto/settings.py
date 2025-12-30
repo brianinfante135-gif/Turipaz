@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-tu-clave-secreta-aqui'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['turispaz-3.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['turispaz-7.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
