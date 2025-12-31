@@ -72,31 +72,18 @@ def recuperar_password(request):
             nueva_password = secrets.token_urlsafe(8)
             password_hash = hashlib.sha256(nueva_password.encode()).hexdigest()
 
-            # 1. GUARDADO PRIORITARIO
+            # 1. Guardamos la clave en la base de datos
             usuario.password = password_hash
             usuario.save()
 
-            # 2. PRINT DE SEGURIDAD (Aparecerá en los logs de Render)
-            print(f"--- SEGURIDAD: CLAVE PARA {correo} ES {nueva_password} ---")
-
-            asunto = 'Recuperación de contraseña - Turipaz'
-            mensaje = f"Hola {usuario.nombre}, tu contraseña temporal es: {nueva_password}"
+            # 2. Mostramos la clave directamente en la pantalla
+            messages.success(request, f'¡Éxito! Tu nueva contraseña para {correo} es: {nueva_password}')
+            messages.info(request, 'Por favor, cópiala y guárdala en un lugar seguro.')
             
-            # 3. ENVÍO EN SEGUNDO PLANO
-            hilo = threading.Thread(
-                target=enviar_correo_async,
-                args=(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, correo)
-            )
-            hilo.start()
-
-            # 4. REDIRECCIÓN INMEDIATA
-            messages.success(request, f'Se está procesando el envío a {correo}.')
             return redirect('inicio')
 
         except Usuario.DoesNotExist:
             messages.error(request, 'No existe una cuenta con ese correo')
-        except Exception as e:
-            messages.error(request, f'Error: {str(e)}')
     return render(request, 'recuperar_password.html')
 
 def interfaz(request):
