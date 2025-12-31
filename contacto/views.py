@@ -2,17 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from contacto.models import Usuario
 import hashlib
-from django.core.mail import send_mail
-from django.conf import settings
 import secrets
-import threading
-
-# --- FUNCIÓN PARA ENVÍO EN SEGUNDO PLANO ---
-def enviar_correo_async(asunto, mensaje, remitente, destinatario):
-    try:
-        send_mail(asunto, mensaje, remitente, [destinatario], fail_silently=False)
-    except Exception as e:
-        print(f"Error en envío de fondo: {e}")
 
 # --- VISTAS ---
 
@@ -20,16 +10,16 @@ def inicio(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-        
-        try:
-            usuario = Usuario.objects.get(username=username, password=password_hash)
-            request.session['user_id'] = str(usuario.id)
-            request.session['username'] = usuario.username
-            request.session['nombre_completo'] = f"{usuario.nombre} {usuario.apellido}"
-            return redirect('interfaz')
-        except Usuario.DoesNotExist:
-            messages.error(request, 'Usuario o contraseña incorrectos')
+        if username and password:
+            password_hash = hashlib.sha256(password.encode()).hexdigest()
+            try:
+                usuario = Usuario.objects.get(username=username, password=password_hash)
+                request.session['user_id'] = str(usuario.id)
+                request.session['username'] = usuario.username
+                request.session['nombre_completo'] = f"{usuario.nombre} {usuario.apellido}"
+                return redirect('interfaz')
+            except Usuario.DoesNotExist:
+                messages.error(request, 'Usuario o contraseña incorrectos')
     return render(request, 'inicio.html')
 
 def registro(request):
@@ -72,18 +62,20 @@ def recuperar_password(request):
             nueva_password = secrets.token_urlsafe(8)
             password_hash = hashlib.sha256(nueva_password.encode()).hexdigest()
 
-            # 1. Guardamos la clave en la base de datos
             usuario.password = password_hash
             usuario.save()
 
-            # 2. Mostramos la clave directamente en la pantalla
-            messages.success(request, f'¡Éxito! Tu nueva contraseña para {correo} es: {nueva_password}')
-            messages.info(request, 'Por favor, cópiala y guárdala en un lugar seguro.')
-            
+            # Mensajes que se mostrarán en la página de inicio al redirigir
+            messages.success(request, f'Contraseña restablecida para {correo}.')
+            messages.info(request, f'TU NUEVA CONTRASEÑA ES: {nueva_password}')
             return redirect('inicio')
 
         except Usuario.DoesNotExist:
-            messages.error(request, 'No existe una cuenta con ese correo')
+            messages.error(request, 'El correo no está registrado.')
+        except Exception as e:
+            print(f"Error crítico: {e}")
+            messages.error(request, 'Hubo un error interno.')
+            
     return render(request, 'recuperar_password.html')
 
 def interfaz(request):
