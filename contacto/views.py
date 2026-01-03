@@ -3,11 +3,6 @@ from django.contrib import messages
 from contacto.models import Usuario
 import hashlib
 import secrets
-import qrcode
-import os
-from django.conf import settings
-from django.shortcuts import render
-from django.contrib import messages
 
 # --- VISTAS ---
 
@@ -93,28 +88,4 @@ def tur3(request): return render(request, 'tur3.html')
 def tur4(request): return render(request, 'tur4.html')
 def tur5(request): return render(request, 'tur5.html')
 def tur6(request): return render(request, 'tur6.html')
-def reservar(request):
-    qr_url = None
-    if request.method == 'POST':
-        # ... lógica de guardado de datos ...
-        
-        # Datos que quieres que tenga el QR
-        datos_qr = f"Reserva Turipaz: {request.POST.get('nombre')} - ID: 12345"
-        
-        # Crear el QR
-        img = qrcode.make(datos_qr)
-        
-        # Nombre del archivo (puedes usar el username o un ID único)
-        qr_filename = f"qr_reserva_{request.POST.get('username')}.png"
-        qr_path = os.path.join(settings.MEDIA_ROOT, 'qrs', qr_filename)
-        
-        # Asegurarse de que la carpeta exista
-        os.makedirs(os.path.dirname(qr_path), exist_ok=True)
-        
-        # Guardar la imagen
-        img.save(qr_path)
-        
-        qr_url = f"{settings.MEDIA_URL}qrs/{qr_filename}"
-        messages.success(request, "¡Reserva exitosa!")
-
-    return render(request, 'reservacion.html', {'qr_url': qr_url})
+def reservacion(request): return render(request, 'reservacion.html')

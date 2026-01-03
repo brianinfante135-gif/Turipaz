@@ -368,24 +368,6 @@
                 grid-template-columns: 1fr;
             }
         }
-        .qr-container {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 2px dashed #ff9900;
-    border-radius: 15px;
-    text-align: center;
-    animation: fadeIn 0.8s ease-out;
-}
-
-.qr-box img {
-    box-shadow: 0 0 20px rgba(255, 153, 0, 0.4);
-    transition: transform 0.3s;
-}
-
-.qr-box img:hover {
-    transform: scale(1.05);
-}
     </style>
 </head>
 <body>
@@ -486,20 +468,74 @@
             </div>
         </div>
     </div>
-{% if qr_url %}
-  <div id="qrResult" class="qr-container visible">
-    <h2 style="color: #ff9900; margin-bottom: 15px;">Tu Pase Turipaz</h2>
-    <p style="color: white; margin-bottom: 15px;">Escanea este código en tu llegada:</p>
-    
-    <div class="qr-box">
-      <img src="{{ qr_url }}" alt="Código QR de Reserva" style="width: 200px; border: 5px solid #fff; border-radius: 10px;">
-    </div>
-    
-    <a href="{{ qr_url }}" download="Mi_QR_Turipaz.png" class="btn btn-secondary">Descargar QR</a>
-  </div>
-{% endif %}
+
     <script>
-       // 1. Configuración de Seguridad (CSRF Token para Django)
+        // Array para almacenar reservaciones
+        let reservations = [];
+        let reservationIdCounter = 1;
+
+        // Inicializar fecha mínima
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+        // Cargar datos del localStorage al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            loadReservationsFromStorage();
+            updateStats();
+            displayReservations();
+        });
+
+        // Guardar en localStorage
+        function saveToStorage() {
+            const data = {
+                reservations: reservations,
+                counter: reservationIdCounter
+            };
+            localStorage.setItem('turipazReservations', JSON.stringify(data));
+        }
+
+        // Cargar desde localStorage
+        function loadReservationsFromStorage() {
+            const stored = localStorage.getItem('turipazReservations');
+            if (stored) {
+                const data = JSON.parse(stored);
+                reservations = data.reservations || [];
+                reservationIdCounter = data.counter || 1;
+            }
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('reservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const reservation = {
+                id: reservationIdCounter++,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                destination: document.getElementById('destination').value,
+                date: document.getElementById('date').value,
+                people: parseInt(document.getElementById('people').value),
+                comments: document.getElementById('comments').value,
+                createdAt: new Date().toLocaleString('es-MX')
+            };
+
+            reservations.unshift(reservation);
+            saveToStorage();
+            updateStats();
+            displayReservations();
+
+            // Limpiar formulario
+            this.reset();
+
+            // Mostrar mensaje de éxito
+            alert('¡Reservación guardada exitosamente!', 'success');
+        // Reemplaza el <script> completo de tu HTML con este código
+// Este script se comunica con la API de Django en lugar de localStorage
+
+// Array para almacenar reservaciones (cargadas desde el servidor)
+let reservations = [];
+
+// Obtener CSRF token de Django
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -514,48 +550,55 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 const csrftoken = getCookie('csrftoken');
 
-// 2. Cargar datos al iniciar
-let reservations = [];
+// Inicializar fecha mínima
 document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
+// Cargar datos al iniciar
 window.addEventListener('DOMContentLoaded', () => {
     loadReservations();
     loadStats();
 });
 
-// 3. Funciones de API (Conexión con Render/Django)
+// Cargar reservaciones desde el servidor
 async function loadReservations() {
     try {
         const response = await fetch('/api/reservaciones/');
         const data = await response.json();
+        
         if (data.success) {
             reservations = data.reservations;
             displayReservations();
+            updateStatsDisplay();
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error al cargar reservaciones:', error);
+        showNotification('Error al cargar las reservaciones', 'error');
     }
 }
 
+// Cargar estadísticas desde el servidor
 async function loadStats() {
     try {
         const response = await fetch('/api/estadisticas/');
         const data = await response.json();
+        
         if (data.success) {
             document.getElementById('totalReservations').textContent = data.stats.totalReservations;
             document.getElementById('totalPeople').textContent = data.stats.totalPeople;
             document.getElementById('todayReservations').textContent = data.stats.todayReservations;
         }
     } catch (error) {
-        console.error('Error stats:', error);
+        console.error('Error al cargar estadísticas:', error);
     }
 }
 
-// 4. Manejo del Formulario
+// Manejar envío del formulario
 document.getElementById('reservationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
     const formData = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
@@ -565,7 +608,7 @@ document.getElementById('reservationForm').addEventListener('submit', async func
         people: parseInt(document.getElementById('people').value),
         comments: document.getElementById('comments').value
     };
-
+    
     try {
         const response = await fetch('/api/reservaciones/crear/', {
             method: 'POST',
@@ -575,32 +618,228 @@ document.getElementById('reservationForm').addEventListener('submit', async func
             },
             body: JSON.stringify(formData)
         });
+        
         const data = await response.json();
+        
         if (data.success) {
-            alert('¡Reservación guardada!');
+            showNotification('¡Reservación guardada exitosamente!', 'success');
             this.reset();
             loadReservations();
             loadStats();
+        } else {
+            showNotification(data.message || 'Error al guardar', 'error');
         }
     } catch (error) {
-        alert('Error al conectar con el servidor');
+        console.error('Error:', error);
+        showNotification('Error al conectar con el servidor', 'error');
     }
 });
 
-// 5. Función para mostrar en pantalla
-function displayReservations() {
+// Mostrar reservaciones
+function displayReservations(filteredReservations = null) {
     const list = document.getElementById('reservationsList');
-    if (reservations.length === 0) {
-        list.innerHTML = '<div class="no-reservations"><p>No hay reservaciones</p></div>';
+    const dataToDisplay = filteredReservations || reservations;
+    
+    if (dataToDisplay.length === 0) {
+        list.innerHTML = `
+            <div class="no-reservations">
+                <i class="fas fa-clipboard-list"></i>
+                <p>No hay reservaciones registradas</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Completa el formulario para agregar tu primera reservación</p>
+            </div>
+        `;
         return;
     }
-    list.innerHTML = reservations.map(res => `
+    
+    list.innerHTML = dataToDisplay.map(res => `
         <div class="reservation-card">
-            <strong>${res.name}</strong> - ${res.destination}<br>
-            <small>${res.date}</small>
+            <div class="reservation-header">
+                <span class="reservation-id">
+                    <i class="fas fa-hashtag"></i> Reserva #${res.id.substring(0, 8)}
+                </span>
+                <span class="reservation-date">
+                    <i class="fas fa-clock"></i> ${res.createdAt}
+                </span>
+            </div>
+            <div class="reservation-body">
+                <div class="reservation-field">
+                    <i class="fas fa-user"></i>
+                    <span><strong>Nombre:</strong> ${res.name}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-envelope"></i>
+                    <span><strong>Email:</strong> ${res.email}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-phone"></i>
+                    <span><strong>Teléfono:</strong> ${res.phone}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span><strong>Destino:</strong> ${res.destination}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-calendar"></i>
+                    <span><strong>Fecha:</strong> ${formatDate(res.date)}</span>
+                </div>
+                <div class="reservation-field">
+                    <i class="fas fa-users"></i>
+                    <span><strong>Personas:</strong> ${res.people}</span>
+                </div>
+            </div>
+            ${res.comments ? `
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 153, 0, 0.3);">
+                    <i class="fas fa-comment" style="color: #ff9900;"></i>
+                    <span style="margin-left: 8px;">${res.comments}</span>
+                </div>
+            ` : ''}
+            <div class="reservation-actions">
+                <button class="btn-edit" onclick="editReservation('${res.id}')">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-delete" onclick="deleteReservation('${res.id}')">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
         </div>
     `).join('');
 }
+
+// Actualizar estadísticas en pantalla
+function updateStatsDisplay() {
+    const totalReservations = reservations.length;
+    const totalPeople = reservations.reduce((sum, res) => sum + res.people, 0);
+    const today = new Date().toISOString().split('T')[0];
+    const todayReservations = reservations.filter(res => res.date === today).length;
+    
+    document.getElementById('totalReservations').textContent = totalReservations;
+    document.getElementById('totalPeople').textContent = totalPeople;
+    document.getElementById('todayReservations').textContent = todayReservations;
+}
+
+// Búsqueda en tiempo real
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    if (searchTerm === '') {
+        displayReservations();
+        return;
+    }
+    
+    const filtered = reservations.filter(res => 
+        res.name.toLowerCase().includes(searchTerm) ||
+        res.destination.toLowerCase().includes(searchTerm) ||
+        res.date.includes(searchTerm) ||
+        res.email.toLowerCase().includes(searchTerm)
+    );
+    
+    displayReservations(filtered);
+});
+
+// Eliminar reservación
+async function deleteReservation(id) {
+    if (!confirm('¿Estás seguro de eliminar esta reservación?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/reservaciones/${id}/eliminar/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Reservación eliminada', 'success');
+            loadReservations();
+            loadStats();
+        } else {
+            showNotification(data.message || 'Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al conectar con el servidor', 'error');
+    }
+}
+
+// Editar reservación (llena el formulario)
+function editReservation(id) {
+    const reservation = reservations.find(res => res.id === id);
+    if (reservation) {
+        document.getElementById('name').value = reservation.name;
+        document.getElementById('email').value = reservation.email;
+        document.getElementById('phone').value = reservation.phone;
+        document.getElementById('destination').value = reservation.destination;
+        document.getElementById('date').value = reservation.date;
+        document.getElementById('people').value = reservation.people;
+        document.getElementById('comments').value = reservation.comments;
+        
+        // Eliminar la reservación antigua
+        deleteReservation(id);
+        
+        // Scroll al formulario
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showNotification('Edita los datos y guarda nuevamente', 'info');
+    }
+}
+
+// Formatear fecha
+function formatDate(dateString) {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('es-MX', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+// Notificaciones
+function showNotification(message, type) {
+    const colors = {
+        success: '#4CAF50',
+        error: '#f44336',
+        info: '#ff9900'
+    };
+    
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type]};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideInRight 0.3s;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Agregar animaciones CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
     </script>
 </body>
 </html>
