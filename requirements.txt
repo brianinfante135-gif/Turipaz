@@ -65,6 +65,7 @@ packaging==25.0
 pandocfilters==1.5.1
 parso==0.8.5
 pexpect==4.9.0
+pillow==12.1.0
 platformdirs==4.5.0
 prometheus_client==0.23.1
 prompt_toolkit==3.0.52
@@ -79,6 +80,7 @@ python-json-logger==4.0.0
 pytz==2025.2
 PyYAML==6.0.3
 pyzmq==27.1.0
+qrcode==8.2
 referencing==0.37.0
 requests==2.32.5
 rfc3339-validator==0.1.4
@@ -106,5 +108,3 @@ webcolors==25.10.0
 webencodings==0.5.1
 websocket-client==1.9.0
 whitenoise==6.5.0
-pymongo[srv]
-dnspython
