@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from contacto import views # Asegúrate de que tu app se llame 'contacto'
+from contacto import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -17,9 +17,14 @@ urlpatterns = [
     path('tur4/', views.tur4, name='tur4'),
     path('tur5/', views.tur5, name='tur5'),
     path('tur6/', views.tur6, name='tur6'),
+    
+    # APIs para el sistema de reservaciones
+    path('api/reservaciones/', views.listar_reservaciones, name='listar_reservaciones'),
+    path('api/reservaciones/crear/', views.crear_reservacion, name='crear_reservacion'),
+    path('api/reservaciones/<str:id>/eliminar/', views.eliminar_reservacion, name='eliminar_reservacion'),
+    path('api/estadisticas/', views.estadisticas, name='estadisticas'),
 ]
 
-# Esto sirve para ver las imágenes en desarrollo
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
