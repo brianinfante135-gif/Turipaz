@@ -368,6 +368,24 @@
                 grid-template-columns: 1fr;
             }
         }
+        .qr-container {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px dashed #ff9900;
+    border-radius: 15px;
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.qr-box img {
+    box-shadow: 0 0 20px rgba(255, 153, 0, 0.4);
+    transition: transform 0.3s;
+}
+
+.qr-box img:hover {
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body>
@@ -468,7 +486,18 @@
             </div>
         </div>
     </div>
-
+{% if qr_url %}
+  <div id="qrResult" class="qr-container visible">
+    <h2 style="color: #ff9900; margin-bottom: 15px;">Tu Pase Turipaz</h2>
+    <p style="color: white; margin-bottom: 15px;">Escanea este código en tu llegada:</p>
+    
+    <div class="qr-box">
+      <img src="{{ qr_url }}" alt="Código QR de Reserva" style="width: 200px; border: 5px solid #fff; border-radius: 10px;">
+    </div>
+    
+    <a href="{{ qr_url }}" download="Mi_QR_Turipaz.png" class="btn btn-secondary">Descargar QR</a>
+  </div>
+{% endif %}
     <script>
         // Array para almacenar reservaciones
         let reservations = [];
