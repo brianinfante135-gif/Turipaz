@@ -80,6 +80,7 @@
             font-weight: 600;
         }
 
+        /* Botón de Reserva Principal */
         .reserve-btn-container {
             text-align: center;
             margin: 30px 0;
@@ -181,16 +182,17 @@
             z-index: 1;
         }
 
+        /* Modal de Reserva - CORREGIDO */
         .modal {
             display: none;
             position: fixed;
-            z-index: 9999;
+            z-index: 9999; /* AUMENTADO - Asegura que esté encima de todo */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto; /* AGREGADO - Permite scroll interno */
+            background-color: rgba(0, 0, 0, 0.9); /* MÁS OSCURO */
             animation: fadeIn 0.3s;
         }
 
@@ -201,17 +203,17 @@
 
         .modal-content {
             background: linear-gradient(135deg, rgba(8, 27, 41, 0.98), rgba(20, 40, 60, 0.98));
-            margin: 3% auto;
+            margin: 3% auto; /* REDUCIDO - Mejor posicionamiento */
             padding: 40px;
-            border: 3px solid #ff9900;
+            border: 3px solid #ff9900; /* MÁS GRUESO */
             border-radius: 15px;
             width: 90%;
             max-width: 600px;
             box-shadow: 0 10px 50px rgba(255, 153, 0, 0.5);
             animation: slideDown 0.3s;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
+            position: relative; /* AGREGADO */
+            max-height: 90vh; /* AGREGADO - Limita altura */
+            overflow-y: auto; /* AGREGADO - Scroll interno */
         }
 
         @keyframes slideDown {
@@ -227,26 +229,26 @@
 
         .close {
             color: #ff9900;
-            position: absolute;
+            position: absolute; /* CAMBIADO */
             right: 20px;
             top: 15px;
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             line-height: 30px;
-            z-index: 10000;
+            z-index: 10000; /* AGREGADO */
             transition: all 0.3s;
         }
 
         .close:hover {
             color: #ff4d00;
-            transform: scale(1.2);
+            transform: scale(1.2); /* AGREGADO - Efecto hover */
         }
 
         .modal h2 {
             color: #ff9900;
             margin-bottom: 30px;
-            margin-top: 10px;
+            margin-top: 10px; /* AGREGADO - Espacio para el botón X */
             text-align: center;
             font-size: 2rem;
         }
@@ -275,6 +277,7 @@
             transition: all 0.3s;
         }
 
+        /* AGREGADO - Estilos para options del select */
         .form-group select option {
             background-color: #1a1a2e;
             color: #fff;
@@ -311,67 +314,6 @@
             background: linear-gradient(135deg, #ffaa00, #ff6600);
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(255, 77, 0, 0.5);
-        }
-
-        /* Estilos para el modal de QR */
-        .qr-result {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .qr-result img {
-            max-width: 300px;
-            width: 100%;
-            border: 3px solid #ff9900;
-            border-radius: 10px;
-            margin: 20px auto;
-            display: block;
-            background: white;
-            padding: 10px;
-        }
-
-        .qr-info {
-            background: rgba(255, 153, 0, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 2px solid #ff9900;
-        }
-
-        .qr-info p {
-            margin: 8px 0;
-            text-align: left;
-            font-size: 1rem;
-        }
-
-        .qr-info strong {
-            color: #ff9900;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px 5px;
-            transition: all 0.3s;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        .close-btn {
-            background: linear-gradient(135deg, #f44336, #da190b);
-        }
-
-        .close-btn:hover {
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
         }
         
         footer {
@@ -419,10 +361,6 @@
                 margin: 5% 5%;
                 width: 90%;
             }
-
-            .qr-result img {
-                max-width: 250px;
-            }
         }
     </style>
 </head>
@@ -444,6 +382,7 @@
             
             <p>Te invitamos a explorar los principales atractivos turísticos que ofrece nuestro municipio, donde podrás maravillarte con su zona arqueológica, disfrutar de sus parques, conocer su arquitectura religiosa y deleitarte con su gastronomía tradicional. <span class="highlight">¡Los Reyes La Paz te espera con los brazos abiertos!</span></p>
             
+            <!-- Botón de Reserva Principal -->
             <div class="reserve-btn-container">
                 <button class="reserve-btn" onclick="openModal()">
                     <i class="fas fa-calendar-check"></i> Reserva tu Visita
@@ -451,31 +390,37 @@
             </div>
 
             <div class="destinations">
+                <!-- Botón 1: Zona Arqueológica -->
                 <a href="{% url 'tur1' %}" class="destination-btn" style="background-image: url('{% static "images/tu1.jpg" %}')">
                     <i class="fas fa-landmark destination-icon"></i>
                     <span class="destination-name">Zona Arqueológica</span>
                 </a>
                 
+                <!-- Botón 2: Parque Soraya Jiménez -->
                 <a href="{% url 'tur2' %}" class="destination-btn" style="background-image: url('{% static "images/tu2.jpg" %}')">
                     <i class="fas fa-tree destination-icon"></i>
                     <span class="destination-name">Parque Soraya Jiménez</span>
                 </a>
                 
+                <!-- Botón 3: Santa Marta -->
                 <a href="{% url 'tur3' %}" class="destination-btn" style="background-image: url('{% static "images/tu3.jpg" %}')">
                     <i class="fas fa-mountain destination-icon"></i>
                     <span class="destination-name">Santa Marta</span>
                 </a>
                 
+                <!-- Botón 4: Parroquia Divino Salvador -->
                 <a href="{% url 'tur4' %}" class="destination-btn" style="background-image: url('{% static "images/tu4.jpg" %}')">
                     <i class="fas fa-church destination-icon"></i>
                     <span class="destination-name">Parroquia Divino Salvador</span>
                 </a>
                 
+                <!-- Botón 5: Volcán de la Caldera -->
                 <a href="{% url 'tur5' %}" class="destination-btn" style="background-image: url('{% static "images/tu5.jpg" %}')">
                     <i class="fas fa-fire destination-icon"></i>
                     <span class="destination-name">Volcán de la Caldera</span>
                 </a>
                 
+                <!-- Botón 6: Parque de la Ciencia -->
                 <a href="{% url 'tur6' %}" class="destination-btn" style="background-image: url('{% static "images/tu6.jpg" %}')">
                     <i class="fas fa-atom destination-icon"></i>
                     <span class="destination-name">Parque de la Ciencia</span>
@@ -516,12 +461,12 @@
                     <label for="destination"><i class="fas fa-map-marker-alt"></i> Destino *</label>
                     <select id="destination" name="destination" required>
                         <option value="">Selecciona un destino</option>
-                        <option value="Zona Arqueológica">Zona Arqueológica</option>
-                        <option value="Parque Soraya Jiménez">Parque Soraya Jiménez</option>
-                        <option value="Santa Marta">Santa Marta</option>
-                        <option value="Parroquia Divino Salvador">Parroquia Divino Salvador</option>
-                        <option value="Volcán de la Caldera">Volcán de la Caldera</option>
-                        <option value="Parque de la Ciencia">Parque de la Ciencia</option>
+                        <option value="zona-arqueologica">Zona Arqueológica</option>
+                        <option value="parque-soraya">Parque Soraya Jiménez</option>
+                        <option value="santa-marta">Santa Marta</option>
+                        <option value="parroquia">Parroquia Divino Salvador</option>
+                        <option value="volcan">Volcán de la Caldera</option>
+                        <option value="parque-ciencia">Parque de la Ciencia</option>
                     </select>
                 </div>
                 
@@ -547,47 +492,13 @@
         </div>
     </div>
 
-    <!-- Modal de QR -->
-    <div id="qrModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeQRModal()">&times;</span>
-            <div class="qr-result">
-                <h2><i class="fas fa-qrcode"></i> ¡Reserva Exitosa!</h2>
-                <p style="color: #4CAF50; font-size: 1.1rem; margin: 15px 0;">
-                    <i class="fas fa-check-circle"></i> Tu reserva ha sido confirmada
-                </p>
-                
-                <img id="qrImage" src="" alt="Código QR de Reserva">
-                
-                <div class="qr-info" id="qrInfo">
-                    <!-- Los datos se llenarán dinámicamente -->
-                </div>
-                
-                <p style="font-size: 0.95rem; color: #ccc; margin: 15px 0;">
-                    <i class="fas fa-info-circle"></i> Guarda este código QR para presentarlo el día de tu visita
-                </p>
-                
-                <div>
-                    <button class="download-btn" onclick="downloadQR()">
-                        <i class="fas fa-download"></i> Descargar QR
-                    </button>
-                    <button class="download-btn close-btn" onclick="closeQRModal()">
-                        <i class="fas fa-times"></i> Cerrar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        let currentQRUrl = '';
-        let currentReservationData = {};
-
         function openModal() {
             const modal = document.getElementById('reserveModal');
             modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // Previene scroll del body
             
+            // Scroll al inicio del modal
             setTimeout(() => {
                 modal.scrollTop = 0;
             }, 100);
@@ -596,33 +507,25 @@
         function closeModal() {
             const modal = document.getElementById('reserveModal');
             modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = 'auto'; // Restaura scroll del body
         }
 
-        function closeQRModal() {
-            const modal = document.getElementById('qrModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
+        // Cerrar modal al hacer clic fuera de él
         window.onclick = function(event) {
-            const reserveModal = document.getElementById('reserveModal');
-            const qrModal = document.getElementById('qrModal');
-            if (event.target == reserveModal) {
+            const modal = document.getElementById('reserveModal');
+            if (event.target == modal) {
                 closeModal();
             }
-            if (event.target == qrModal) {
-                closeQRModal();
-            }
         }
 
+        // Cerrar modal con la tecla ESC
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
-                closeQRModal();
             }
         });
 
+        // Establecer fecha mínima como hoy
         document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
         function handleSubmit(event) {
@@ -638,59 +541,41 @@
                 message: document.getElementById('message').value
             };
             
-            currentReservationData = formData;
+            console.log('Datos de reserva:', formData);
             
-            // Crear texto para el QR con todos los datos
-            const qrText = `TURIPAZ - RESERVA CONFIRMADA
-━━━━━━━━━━━━━━━━━━━━━━
-👤 Nombre: ${formData.name}
-📧 Email: ${formData.email}
-📞 Teléfono: ${formData.phone}
-📍 Destino: ${formData.destination}
-📅 Fecha: ${formData.date}
-👥 Personas: ${formData.people}
-💬 Comentarios: ${formData.message || 'Ninguno'}
-━━━━━━━━━━━━━━━━━━━━━━
-Válido para el día de la visita`;
+            // Obtener el nombre del destino seleccionado
+            const destinationSelect = document.getElementById('destination');
+            const destinationText = destinationSelect.options[destinationSelect.selectedIndex].text;
             
-            // Generar QR usando API pública
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrText)}`;
-            currentQRUrl = qrUrl;
+            alert('¡Reserva enviada exitosamente! 🎉\n\nNos pondremos en contacto contigo pronto.\n\n' +
+                  '📍 Destino: ' + destinationText + 
+                  '\n📅 Fecha: ' + formData.date + 
+                  '\n👥 Personas: ' + formData.people);
             
-            // Mostrar el QR en el modal
-            document.getElementById('qrImage').src = qrUrl;
-            
-            // Llenar información de la reserva
-            document.getElementById('qrInfo').innerHTML = `
-                <p><strong><i class="fas fa-user"></i> Nombre:</strong> ${formData.name}</p>
-                <p><strong><i class="fas fa-envelope"></i> Email:</strong> ${formData.email}</p>
-                <p><strong><i class="fas fa-phone"></i> Teléfono:</strong> ${formData.phone}</p>
-                <p><strong><i class="fas fa-map-marker-alt"></i> Destino:</strong> ${formData.destination}</p>
-                <p><strong><i class="fas fa-calendar"></i> Fecha:</strong> ${formData.date}</p>
-                <p><strong><i class="fas fa-users"></i> Personas:</strong> ${formData.people}</p>
-                ${formData.message ? `<p><strong><i class="fas fa-comment"></i> Comentarios:</strong> ${formData.message}</p>` : ''}
-            `;
-            
-            // Cerrar modal de formulario y abrir modal de QR
-            closeModal();
-            document.getElementById('qrModal').style.display = 'block';
-            
-            // Limpiar formulario
             document.getElementById('reserveForm').reset();
-        }
-
-        function downloadQR() {
-            // Crear un enlace temporal para descargar
-            const link = document.createElement('a');
-            link.href = currentQRUrl;
-            link.download = `TURIPAZ_Reserva_${currentReservationData.name.replace(/\s+/g, '_')}_${currentReservationData.date}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            closeModal();
             
-            alert('¡Código QR descargado! Guárdalo para tu visita.');
+            // INTEGRACIÓN CON DJANGO (descomenta cuando estés listo)
+            /*
+            fetch('/guardar-reserva/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            */
         }
 
+        // Función para obtener el CSRF token
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
