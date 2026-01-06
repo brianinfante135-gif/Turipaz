@@ -57,26 +57,18 @@ WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 
 # Database
 DATABASES = {
-    # Base de datos que ya tienes (Turipaz)
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'Turipaz',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-             'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
-            'maxPoolSize': 1,
-            'retryWrites': True,
-            'retryReads': True,
-        }
-    },
-    # Nueva base de datos para Registros/Reservas
-    'reservas_db': {
-        'ENGINE': 'djongo',
-        'NAME': 'reservas', # Se creará automáticamente en Atlas
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-             'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
-            'maxPoolSize': 1,
+            'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
+            'maxPoolSize': 1,  # Solo 1 conexión para ahorrar memoria
+            'minPoolSize': 0,
+            'maxIdleTimeMS': 45000,
+            'serverSelectionTimeoutMS': 10000,
+            'socketTimeoutMS': 45000,
+            'connectTimeoutMS': 10000,
             'retryWrites': True,
             'retryReads': True,
         }
