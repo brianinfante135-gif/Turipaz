@@ -80,10 +80,14 @@
             font-weight: 600;
         }
 
-        /* Botón de Reserva Principal */
+        /* Botones Principales */
         .reserve-btn-container {
             text-align: center;
             margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         .reserve-btn {
@@ -111,6 +115,16 @@
 
         .reserve-btn i {
             margin-right: 10px;
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .ai-btn:hover {
+            background: linear-gradient(135deg, #0d7a6f, #2cc98a);
+            box-shadow: 0 8px 30px rgba(17, 153, 142, 0.6);
         }
         
         .destinations {
@@ -182,17 +196,17 @@
             z-index: 1;
         }
 
-        /* Modal de Reserva - CORREGIDO */
+        /* Modal Base */
         .modal {
             display: none;
             position: fixed;
-            z-index: 9999; /* AUMENTADO - Asegura que esté encima de todo */
+            z-index: 9999;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* AGREGADO - Permite scroll interno */
-            background-color: rgba(0, 0, 0, 0.9); /* MÁS OSCURO */
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
             animation: fadeIn 0.3s;
         }
 
@@ -203,17 +217,17 @@
 
         .modal-content {
             background: linear-gradient(135deg, rgba(8, 27, 41, 0.98), rgba(20, 40, 60, 0.98));
-            margin: 3% auto; /* REDUCIDO - Mejor posicionamiento */
+            margin: 3% auto;
             padding: 40px;
-            border: 3px solid #ff9900; /* MÁS GRUESO */
+            border: 3px solid #ff9900;
             border-radius: 15px;
             width: 90%;
             max-width: 600px;
             box-shadow: 0 10px 50px rgba(255, 153, 0, 0.5);
             animation: slideDown 0.3s;
-            position: relative; /* AGREGADO */
-            max-height: 90vh; /* AGREGADO - Limita altura */
-            overflow-y: auto; /* AGREGADO - Scroll interno */
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideDown {
@@ -229,26 +243,26 @@
 
         .close {
             color: #ff9900;
-            position: absolute; /* CAMBIADO */
+            position: absolute;
             right: 20px;
             top: 15px;
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             line-height: 30px;
-            z-index: 10000; /* AGREGADO */
+            z-index: 10000;
             transition: all 0.3s;
         }
 
         .close:hover {
             color: #ff4d00;
-            transform: scale(1.2); /* AGREGADO - Efecto hover */
+            transform: scale(1.2);
         }
 
         .modal h2 {
             color: #ff9900;
             margin-bottom: 30px;
-            margin-top: 10px; /* AGREGADO - Espacio para el botón X */
+            margin-top: 10px;
             text-align: center;
             font-size: 2rem;
         }
@@ -277,7 +291,6 @@
             transition: all 0.3s;
         }
 
-        /* AGREGADO - Estilos para options del select */
         .form-group select option {
             background-color: #1a1a2e;
             color: #fff;
@@ -315,6 +328,143 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(255, 77, 0, 0.5);
         }
+
+        /* Modal de IA */
+        #aiModal .modal-content {
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.98), rgba(56, 239, 125, 0.95));
+            border: 3px solid #11998e;
+            max-width: 700px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-header {
+            background: linear-gradient(135deg, #0d7a6f, #2cc98a);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .ai-header h2 {
+            margin: 0;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .ai-header p {
+            margin: 5px 0 0 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        .ai-chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 400px;
+            max-height: 500px;
+        }
+
+        .ai-message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .ai-message.user {
+            justify-content: flex-end;
+        }
+
+        .ai-message-content {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .ai-message.user .ai-message-content {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(17, 153, 142, 0.3);
+        }
+
+        .ai-message.ai .ai-message-content {
+            background: white;
+            color: #333;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #11998e;
+        }
+
+        .ai-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #11998e;
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #11998e;
+            border-radius: 25px;
+            font-size: 15px;
+            outline: none;
+            color: #333;
+        }
+
+        .ai-send-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .ai-send-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .ai-send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ai-typing {
+            display: flex;
+            gap: 4px;
+            padding: 14px 18px;
+        }
+
+        .ai-typing span {
+            width: 8px;
+            height: 8px;
+            background: #11998e;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .ai-typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
         
         footer {
             text-align: center;
@@ -351,9 +501,16 @@
                 padding: 20px;
             }
 
+            .reserve-btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
             .reserve-btn {
                 padding: 15px 30px;
                 font-size: 1.1rem;
+                width: 100%;
+                max-width: 300px;
             }
 
             .modal-content {
@@ -382,10 +539,13 @@
             
             <p>Te invitamos a explorar los principales atractivos turísticos que ofrece nuestro municipio, donde podrás maravillarte con su zona arqueológica, disfrutar de sus parques, conocer su arquitectura religiosa y deleitarte con su gastronomía tradicional. <span class="highlight">¡Los Reyes La Paz te espera con los brazos abiertos!</span></p>
             
-            <!-- Botón de Reserva Principal -->
+            <!-- Botones Principales -->
             <div class="reserve-btn-container">
                 <button class="reserve-btn" onclick="openModal()">
                     <i class="fas fa-calendar-check"></i> Reserva tu Visita
+                </button>
+                <button class="reserve-btn ai-btn" onclick="openAIModal()">
+                    <i class="fas fa-robot"></i> Habla con TuriPaz IA
                 </button>
             </div>
 
@@ -492,36 +652,194 @@
         </div>
     </div>
 
+    <!-- Modal de TuriPaz IA -->
+    <div id="aiModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAIModal()">&times;</span>
+            <div class="ai-header">
+                <h2>🤖 TuriPaz IA</h2>
+                <p>Tu asistente turístico especializado en Los Reyes La Paz</p>
+            </div>
+            <div class="ai-chat-container" id="aiChatContainer">
+                <div class="ai-message ai">
+                    <div class="ai-message-content">
+                        ¡Hola! 👋 Soy TuriPaz, tu guía turística IA especializada en Los Reyes La Paz, Estado de México. Conozco todos los destinos turísticos de la zona, su historia, gastronomía y mucho más. ¿En qué puedo ayudarte?
+                    </div>
+                </div>
+            </div>
+            <div class="ai-input-container">
+                <input type="text" id="aiInput" class="ai-input" placeholder="Pregunta sobre Los Reyes La Paz..." />
+                <button id="aiSendBtn" class="ai-send-btn">Enviar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Variables globales para la IA
+        let aiConversationHistory = [];
+        
+        const aiSystemPrompt = `Eres TuriPaz, un asistente de IA especializado EXCLUSIVAMENTE en turismo de Los Reyes La Paz, Estado de México. 
+
+INFORMACIÓN CLAVE que DEBES conocer:
+
+DESTINOS TURÍSTICOS PRINCIPALES:
+1. Zona Arqueológica - Vestigios prehispánicos de la civilización mexica
+2. Parque Soraya Jiménez - Parque recreativo y deportivo
+3. Santa Marta - Zona natural y de senderismo
+4. Parroquia Divino Salvador - Arquitectura religiosa histórica
+5. Volcán de la Caldera - Atractivo natural geológico
+6. Parque de la Ciencia - Espacio educativo y recreativo
+
+HISTORIA:
+- Nombre original: Acaquilpan (náhuatl: "lugar donde crecen las cañas")
+- Fundado oficialmente en 1875
+- Nombre en honor a los Tres Reyes Magos
+- Raíces prehispánicas de la civilización mexica
+- Ubicado en el oriente del Estado de México
+
+Tu personalidad:
+- Amigable, entusiasta y conocedor
+- Usas emojis relacionados con turismo: ✈️ 🗺️ 🏔️ 🌴 🎒 📸 🍴
+- Respondes SOLO sobre Los Reyes La Paz
+- Si preguntan de otros lugares, rediriges amablemente al municipio
+
+IMPORTANTE: Si te preguntan sobre destinos FUERA de Los Reyes La Paz, responde: "Mi especialidad es Los Reyes La Paz 🏛️ Sin embargo, puedo contarte cómo este municipio se compara con otros lugares o por qué deberías visitarlo. ¿Te gustaría saber más sobre nuestros 6 destinos principales?"`;
+
+        // Funciones del modal de reserva
         function openModal() {
             const modal = document.getElementById('reserveModal');
             modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Previene scroll del body
-            
-            // Scroll al inicio del modal
-            setTimeout(() => {
-                modal.scrollTop = 0;
-            }, 100);
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modal.scrollTop = 0, 100);
         }
 
         function closeModal() {
             const modal = document.getElementById('reserveModal');
             modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restaura scroll del body
+            document.body.style.overflow = 'auto';
         }
 
-        // Cerrar modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            const modal = document.getElementById('reserveModal');
-            if (event.target == modal) {
-                closeModal();
+        // Funciones del modal de IA
+        function openAIModal() {
+            const modal = document.getElementById('aiModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modal.scrollTop = 0, 100);
+            document.getElementById('aiInput').focus();
+        }
+
+        function closeAIModal() {
+            const modal = document.getElementById('aiModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function addAIMessage(content, isUser) {
+            const chatContainer = document.getElementById('aiChatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `ai-message ${isUser ? 'user' : 'ai'}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'ai-message-content';
+            contentDiv.textContent = content;
+            
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showAITyping() {
+            const chatContainer = document.getElementById('aiChatContainer');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'ai-message ai';
+            typingDiv.id = 'aiTyping';
+            typingDiv.innerHTML = '<div class="ai-message-content ai-typing"><span></span><span></span><span></span></div>';
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function removeAITyping() {
+            const typing = document.getElementById('aiTyping');
+            if (typing) typing.remove();
+        }
+
+        async function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const sendBtn = document.getElementById('aiSendBtn');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addAIMessage(message, true);
+            input.value = '';
+            sendBtn.disabled = true;
+            showAITyping();
+
+            aiConversationHistory.push({
+                role: "user",
+                content: message
+            });
+
+            try {
+                const messages = [
+                    { role: "user", content: aiSystemPrompt },
+                    ...aiConversationHistory
+                ];
+
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 1000,
+                        messages: messages
+                    })
+                });
+
+                const data = await response.json();
+                removeAITyping();
+
+                if (data.content && data.content[0]) {
+                    const aiResponse = data.content[0].text;
+                    addAIMessage(aiResponse, false);
+                    
+                    aiConversationHistory.push({
+                        role: "assistant",
+                        content: aiResponse
+                    });
+                } else {
+                    addAIMessage("Lo siento, hubo un error. Por favor intenta de nuevo.", false);
+                }
+            } catch (error) {
+                removeAITyping();
+                addAIMessage("Error al conectar con TuriPaz IA. Intenta nuevamente.", false);
+                console.error(error);
             }
+
+            sendBtn.disabled = false;
+            input.focus();
         }
 
-        // Cerrar modal con la tecla ESC
+        // Event listeners
+        document.getElementById('aiSendBtn').addEventListener('click', sendAIMessage);
+        document.getElementById('aiInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAIMessage();
+        });
+
+        // Cerrar modales con click fuera o ESC
+        window.onclick = function(event) {
+            const reserveModal = document.getElementById('reserveModal');
+            const aiModal = document.getElementById('aiModal');
+            if (event.target == reserveModal) closeModal();
+            if (event.target == aiModal) closeAIModal();
+        }
+
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
+                closeAIModal();
             }
         });
 
@@ -543,7 +861,6 @@
             
             console.log('Datos de reserva:', formData);
             
-            // Obtener el nombre del destino seleccionado
             const destinationSelect = document.getElementById('destination');
             const destinationText = destinationSelect.options[destinationSelect.selectedIndex].text;
             
@@ -575,7 +892,6 @@
             */
         }
 
-        // Función para obtener el CSRF token
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
