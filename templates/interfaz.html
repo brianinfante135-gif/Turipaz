@@ -605,55 +605,62 @@
     {% csrf_token %}
     <button type="submit">Enviar Reserva</button>
 </form>
-                <div class="form-group">
-                    <label for="name"><i class="fas fa-user"></i> Nombre Completo *</label>
-                    <input type="text" id="name" name="name" required placeholder="Ingresa tu nombre completo">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico *</label>
-                    <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone"><i class="fas fa-phone"></i> Teléfono *</label>
-                    <input type="tel" id="phone" name="phone" required placeholder="10 dígitos" pattern="[0-9]{10}" title="Ingresa 10 dígitos">
-                </div>
-                
-                <div class="form-group">
-                    <label for="destination"><i class="fas fa-map-marker-alt"></i> Destino *</label>
-                    <select id="destination" name="destination" required>
-                        <option value="">Selecciona un destino</option>
-                        <option value="zona-arqueologica">Zona Arqueológica</option>
-                        <option value="parque-soraya">Parque Soraya Jiménez</option>
-                        <option value="santa-marta">Santa Marta</option>
-                        <option value="parroquia">Parroquia Divino Salvador</option>
-                        <option value="volcan">Volcán de la Caldera</option>
-                        <option value="parque-ciencia">Parque de la Ciencia</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="date"><i class="fas fa-calendar"></i> Fecha de Visita *</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="people"><i class="fas fa-users"></i> Número de Personas *</label>
-                    <input type="number" id="people" name="people" min="1" max="50" required placeholder="¿Cuántas personas?">
-                </div>
-                
-                <div class="form-group">
-                    <label for="message"><i class="fas fa-comment"></i> Comentarios Adicionales</label>
-                    <textarea id="message" name="message" placeholder="Escribe cualquier información adicional o solicitud especial..."></textarea>
-                </div>
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> Enviar Reserva
-                </button>
-            </form>
-        </div>
-    </div>
+              <div id="reserveModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2><i class="fas fa-calendar-alt"></i> Reserva tu Visita</h2>
+        
+        <form id="reserveForm" method="POST" action="{% url 'index' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> Nombre Completo *</label>
+                <input type="text" id="name" name="name" required placeholder="Ingresa tu nombre completo">
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico *</label>
+                <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com">
+            </div>
+
+            <div class="form-group">
+                <label for="phone"><i class="fas fa-phone"></i> Teléfono *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="10 dígitos" pattern="[0-9]{10}">
+            </div>
+
+            <div class="form-group">
+                <label for="destination"><i class="fas fa-map-marker-alt"></i> Destino *</label>
+                <select id="destination" name="destination" required>
+                    <option value="">Selecciona un destino</option>
+                    <option value="zona-arqueologica">Zona Arqueológica</option>
+                    <option value="parque-soraya">Parque Soraya Jiménez</option>
+                    <option value="santa-marta">Santa Marta</option>
+                    <option value="parroquia">Parroquia Divino Salvador</option>
+                    <option value="volcan">Volcán de la Caldera</option>
+                    <option value="parque-ciencia">Parque de la Ciencia</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date"><i class="fas fa-calendar"></i> Fecha de Visita *</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="people"><i class="fas fa-users"></i> Número de Personas *</label>
+                <input type="number" id="people" name="people" min="1" max="50" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message"><i class="fas fa-comment"></i> Comentarios Adicionales</label>
+                <textarea id="message" name="message" placeholder="Información adicional..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i> Enviar Reserva
+            </button>
+        </form> </div>
+</div>
 
     <!-- Modal de TuriPaz IA -->
     <div id="aiModal" class="modal">
@@ -709,13 +716,8 @@ Tu personalidad:
 IMPORTANTE: Si te preguntan sobre destinos FUERA de Los Reyes La Paz, responde: "Mi especialidad es Los Reyes La Paz 🏛️ Sin embargo, puedo contarte cómo este municipio se compara con otros lugares o por qué deberías visitarlo. ¿Te gustaría saber más sobre nuestros 6 destinos principales?"`;
 
         // Funciones del modal de reserva
-      function openModal() {
-    const modal = document.getElementById("reserveModal");
-    if (modal) {
-        modal.style.display = "block";
-    } else {
-        console.error("No se encontró el modal con ID reserveModal");
-    }
+    function openModal() {
+    document.getElementById("reserveModal").style.display = "block";
 }
 
 function closeModal() {
@@ -723,19 +725,21 @@ function closeModal() {
 }
 
         // Funciones del modal de IA
-        function openAIModal() {
-            const modal = document.getElementById('aiModal');
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => modal.scrollTop = 0, 100);
-            document.getElementById('aiInput').focus();
-        }
+      function openAIModal() {
+    document.getElementById('aiModal').style.display = 'block';
+}
 
-        function closeAIModal() {
-            const modal = document.getElementById('aiModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+      function closeAIModal() {
+    document.getElementById('aiModal').style.display = 'none';
+}
+
+// Cerrar modales si se hace clic fuera de la caja blanca
+window.onclick = function(event) {
+    const reserveModal = document.getElementById('reserveModal');
+    const aiModal = document.getElementById('aiModal');
+    if (event.target == reserveModal) closeModal();
+    if (event.target == aiModal) closeAIModal();
+}
 
         function addAIMessage(content, isUser) {
             const chatContainer = document.getElementById('aiChatContainer');
@@ -946,5 +950,6 @@ function getCookie(name) {
 </body>
 
 </html>
+
 
 
