@@ -709,18 +709,18 @@ Tu personalidad:
 IMPORTANTE: Si te preguntan sobre destinos FUERA de Los Reyes La Paz, responde: "Mi especialidad es Los Reyes La Paz 🏛️ Sin embargo, puedo contarte cómo este municipio se compara con otros lugares o por qué deberías visitarlo. ¿Te gustaría saber más sobre nuestros 6 destinos principales?"`;
 
         // Funciones del modal de reserva
-        function openModal() {
-            const modal = document.getElementById('reserveModal');
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => modal.scrollTop = 0, 100);
-        }
+      function openModal() {
+    const modal = document.getElementById("reserveModal");
+    if (modal) {
+        modal.style.display = "block";
+    } else {
+        console.error("No se encontró el modal con ID reserveModal");
+    }
+}
 
-        function closeModal() {
-            const modal = document.getElementById('reserveModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+function closeModal() {
+    document.getElementById("reserveModal").style.display = "none";
+}
 
         // Funciones del modal de IA
         function openAIModal() {
@@ -946,4 +946,5 @@ function getCookie(name) {
 </body>
 
 </html>
+
 
