@@ -18,8 +18,8 @@ urlpatterns = [
     path('tur5/', views.tur5, name='tur5'),
     path('tur6/', views.tur6, name='tur6'),
     path('index/', views.index, name='index'),
-       path('admin/', admin.site.urls),
-    path('', include('contacto.urls')),
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
