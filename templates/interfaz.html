@@ -716,30 +716,36 @@ Tu personalidad:
 IMPORTANTE: Si te preguntan sobre destinos FUERA de Los Reyes La Paz, responde: "Mi especialidad es Los Reyes La Paz 🏛️ Sin embargo, puedo contarte cómo este municipio se compara con otros lugares o por qué deberías visitarlo. ¿Te gustaría saber más sobre nuestros 6 destinos principales?"`;
 
         // Funciones del modal de reserva
-    function openModal() {
-    document.getElementById("reserveModal").style.display = "block";
-}
+  function openModal() {
+        const modal = document.getElementById("reserveModal");
+        if (modal) {
+            modal.style.display = "block";
+        }
+    }
 
-function closeModal() {
-    document.getElementById("reserveModal").style.display = "none";
-}
+    // Función para abrir el modal de la IA
+    function openAIModal() {
+        const modal = document.getElementById("aiModal");
+        if (modal) {
+            modal.style.display = "block";
+        }
+    }
 
-        // Funciones del modal de IA
-      function openAIModal() {
-    document.getElementById('aiModal').style.display = 'block';
-}
+    // Funciones para cerrar
+    function closeModal() {
+        document.getElementById("reserveModal").style.display = "none";
+    }
 
-      function closeAIModal() {
-    document.getElementById('aiModal').style.display = 'none';
-}
+    function closeAIModal() {
+        document.getElementById("aiModal").style.display = "none";
+    }
 
-// Cerrar modales si se hace clic fuera de la caja blanca
-window.onclick = function(event) {
-    const reserveModal = document.getElementById('reserveModal');
-    const aiModal = document.getElementById('aiModal');
-    if (event.target == reserveModal) closeModal();
-    if (event.target == aiModal) closeAIModal();
-}
+    // Cerrar si hacen clic fuera de la caja
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
+    }
 
         function addAIMessage(content, isUser) {
             const chatContainer = document.getElementById('aiChatContainer');
@@ -950,6 +956,7 @@ function getCookie(name) {
 </body>
 
 </html>
+
 
 
 
