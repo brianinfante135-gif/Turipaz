@@ -6,7 +6,7 @@ import hashlib
 import secrets
 import json
 # Usa el punto para referirte a los modelos de la misma carpeta 'contacto'
-from .models import Reserva, Usuario
+from .models import Reservacion, Usuario
 # Importa tus modelos y formularios DESDE TU APP (asumiendo que se llama 'contacto')
 from .models import Reservacion, DestinoTuristico, Usuario, Reserva 
 from .forms import ReservacionForm, DestinoTuristicoForm, UsuarioForm
@@ -93,7 +93,7 @@ def interfaz(request):
     if request.method == 'POST':
         try:
             # Creamos la reserva usando el modelo 'Reserva' (o 'Reservacion' según tu models.py)
-            Reserva.objects.create(
+            Reservacion.objects.create(
                 nombre=request.POST.get('name'),
                 email=request.POST.get('email'),
                 telefono=request.POST.get('phone'),
@@ -226,5 +226,6 @@ def index(request):
     }
     
     return render(request, 'index.html', context)
+
 
 
