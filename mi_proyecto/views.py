@@ -141,12 +141,15 @@ Equipo Turipaz
     return render(request, 'recuperar_password.html')
 
 # Vista para interfaz
+# 1. Al principio de tu archivo, asegúrate de tener este import:
+from contacto.models import Usuario, Reserva 
+
+# ... (otras funciones)
+
 def interfaz(request):
-    # 1. Verificar si el usuario está logueado
     if 'user_id' not in request.session:
         return redirect('index')
 
-    # 2. Si el usuario envía el formulario de reserva (POST)
     if request.method == 'POST':
         nombre = request.POST.get('name')
         email = request.POST.get('email')
@@ -156,8 +159,8 @@ def interfaz(request):
         personas = request.POST.get('people')
         mensaje = request.POST.get('message')
 
-        # Guardar en la base de datos
-        from .models import Reserva # Import local para evitar errores de carga circular
+        # CAMBIO AQUÍ: Ya no usamos "from .models"
+        # Usamos Reserva directamente porque ya lo importamos arriba
         Reserva.objects.create(
             nombre=nombre,
             email=email,
@@ -169,6 +172,11 @@ def interfaz(request):
         )
         messages.success(request, '¡Reserva realizada con éxito!')
         return redirect('index')
+
+    return render(request, 'index.html')
+
+# 2. Al final de tu archivo, en la función index, TAMBIÉN BORRA:
+# from .models import Reserva  <-- BORRAR ESTA LÍNEA SI EXISTE
 
     # 3. Si solo entra a ver la página (GET)
     return render(request, 'index.html')
@@ -225,5 +233,6 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
+
 
 
