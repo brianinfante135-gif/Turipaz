@@ -156,7 +156,7 @@ def interfaz(request):
             comentarios=request.POST.get('message')
         )
         messages.success(request, '¡Reserva realizada con éxito!')
-        return redirect('interfaz')
+        return redirect('index')
 
     return render(request, 'interfaz.html')
 
@@ -215,3 +215,4 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
+
