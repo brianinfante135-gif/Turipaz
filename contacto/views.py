@@ -1,16 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from contacto.models import Usuario
+from django.conf import settings
 import hashlib
 import secrets
 import json
-from datetime import datetime
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Reservacion, DestinoTuristico, Usuario
+
+# Importa tus modelos y formularios DESDE TU APP (asumiendo que se llama 'contacto')
+from .models import Reservacion, DestinoTuristico, Usuario, Reserva 
 from .forms import ReservacionForm, DestinoTuristicoForm, UsuarioForm
 
 # --- VISTAS PRINCIPALES ---
@@ -87,8 +84,28 @@ def recuperar_password(request):
     return render(request, 'recuperar_password.html')
 
 def interfaz(request):
-    if 'user_id' not in request.session: 
+    # 1. Verificar si el usuario está logueado
+    if 'user_id' not in request.session:
         return redirect('inicio')
+
+    # 2. Si el usuario envía el formulario de reserva
+    if request.method == 'POST':
+        try:
+            # Creamos la reserva usando el modelo 'Reserva' (o 'Reservacion' según tu models.py)
+            Reserva.objects.create(
+                nombre=request.POST.get('name'),
+                email=request.POST.get('email'),
+                telefono=request.POST.get('phone'),
+                destino=request.POST.get('destination'),
+                fecha=request.POST.get('date'),
+                personas=request.POST.get('people'),
+                mensaje=request.POST.get('message')
+            )
+            messages.success(request, '¡Tu reserva ha sido enviada con éxito!')
+            return redirect('interfaz')
+        except Exception as e:
+            messages.error(request, f'Error al guardar la reserva: {str(e)}')
+
     return render(request, 'interfaz.html')
 
 # Vistas de turismo
@@ -208,3 +225,4 @@ def index(request):
     }
     
     return render(request, 'index.html', context)
+
