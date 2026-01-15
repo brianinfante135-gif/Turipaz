@@ -191,16 +191,7 @@ def reservacion(request):
 
 def index(request):
     if request.method == 'POST':
-        # 1. Capturar los datos del formulario (los 'name' del HTML)
-        nombre = request.POST.get('name')
-        email = request.POST.get('email')
-        telefono = request.POST.get('phone')
-        destino = request.POST.get('destination')
-        fecha = request.POST.get('date')
-        personas = request.POST.get('people')
-        mensaje = request.POST.get('message')
-
-        # 2. Crear el registro en la base de datos
+        # ... (tu código de captura de datos igual) ...
         Reservacion.objects.create(
             nombre=nombre,
             email=email,
@@ -210,9 +201,13 @@ def index(request):
             personas=personas,
             mensaje=mensaje
         )
-        # 3. Después de guardar, recarga la página
         return redirect('index') 
 
-    # Si es un GET (entrar normal a la página), solo muestra el HTML
-    return render(request, 'index.html')
+    # --- LO QUE DEBES AGREGAR ---
+    # Consultamos todas las reservaciones para enviarlas a la tabla
+    todas_las_reservas = Reservacion.objects.all()
+    
+    # Pasamos los datos al template usando un diccionario
+    return render(request, 'index.html', {'mis_reservas': todas_las_reservas})
+
 
