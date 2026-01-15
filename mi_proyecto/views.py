@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from contacto.models import Usuario, Reservaciones
+# Asegúrate de usar 'Reservacion' en singular, tal como está en tu models.py
+from contacto.models import Usuario, Reservacion, DestinoTuristico
 import hashlib
 from django.core.mail import send_mail
 from django.conf import settings
@@ -151,24 +152,17 @@ def interfaz(request):
         return redirect('index')
 
     if request.method == 'POST':
-        nombre = request.POST.get('name')
-        email = request.POST.get('email')
-        telefono = request.POST.get('phone')
-        destino = request.POST.get('destination')
-        fecha = request.POST.get('date')
-        personas = request.POST.get('people')
-        mensaje = request.POST.get('message')
+        # ... (tus variables de request.POST.get)
 
-        # CAMBIO AQUÍ: Ya no usamos "from .models"
-        # Usamos Reserva directamente porque ya lo importamos arriba
-        Reserva.objects.create(
-            nombre=nombre,
-            email=email,
-            telefono=telefono,
-            destino=destino,
-            fecha=fecha,
-            personas=personas,
-            mensaje=mensaje
+        # USA EL NOMBRE CORRECTO: Reservacion
+        Reservacion.objects.create(
+            nombre_completo=request.POST.get('name'), # Verifica que el campo sea nombre_completo
+            email=request.POST.get('email'),
+            telefono=request.POST.get('phone'),
+            destino=request.POST.get('destination'),
+            fecha_visita=request.POST.get('date'),    # Tu modelo usa fecha_visita, no fecha
+            numero_personas=request.POST.get('people'), # Tu modelo usa numero_personas, no personas
+            comentarios=request.POST.get('message')   # Tu modelo usa comentarios, no mensaje
         )
         messages.success(request, '¡Reserva realizada con éxito!')
         return redirect('index')
@@ -233,6 +227,7 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
+
 
 
 
