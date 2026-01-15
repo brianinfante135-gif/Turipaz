@@ -140,12 +140,6 @@ Equipo Turipaz
     
     return render(request, 'recuperar_password.html')
 
-# Vista para interfaz
-# 1. Al principio de tu archivo, asegúrate de tener este import:
-from contacto.models import Usuario, Reserva 
-
-# ... (otras funciones)
-
 def interfaz(request):
     if 'user_id' not in request.session:
         return redirect('index')
@@ -226,6 +220,7 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
+
 
 
 
