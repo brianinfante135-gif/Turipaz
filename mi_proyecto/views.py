@@ -142,23 +142,21 @@ Equipo Turipaz
 
 def interfaz(request):
     if 'user_id' not in request.session:
-        return redirect('index')
+        return redirect('inicio') # Redirigir al login si no hay sesión
 
     if request.method == 'POST':
-        # ... (tus variables de request.POST.get)
-
-        # USA EL NOMBRE CORRECTO: Reservacion
+        # Guardar usando los nombres exactos de tu models.py
         Reservacion.objects.create(
-            nombre_completo=request.POST.get('name'), # Verifica que el campo sea nombre_completo
+            nombre_completo=request.POST.get('name'),
             email=request.POST.get('email'),
             telefono=request.POST.get('phone'),
             destino=request.POST.get('destination'),
-            fecha_visita=request.POST.get('date'),    # Tu modelo usa fecha_visita, no fecha
-            numero_personas=request.POST.get('people'), # Tu modelo usa numero_personas, no personas
-            comentarios=request.POST.get('message')   # Tu modelo usa comentarios, no mensaje
+            fecha_visita=request.POST.get('date'),
+            numero_personas=request.POST.get('people') if request.POST.get('people') else 1,
+            comentarios=request.POST.get('message')
         )
         messages.success(request, '¡Reserva realizada con éxito!')
-        return redirect('index')
+        return redirect('interfaz')
 
     return render(request, 'index.html')
 
@@ -191,9 +189,6 @@ def reservacion(request):
 
     return render(request, 'reservacion.html')
 
-from django.shortcuts import render, redirect
-from .models import Reserva # Asegúrate de importar tu modelo
-
 def index(request):
     if request.method == 'POST':
         # 1. Capturar los datos del formulario (los 'name' del HTML)
@@ -206,7 +201,7 @@ def index(request):
         mensaje = request.POST.get('message')
 
         # 2. Crear el registro en la base de datos
-        Reserva.objects.create(
+        Reservacion.objects.create(
             nombre=nombre,
             email=email,
             telefono=telefono,
@@ -220,8 +215,6 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
-
-
 
 
 
