@@ -158,7 +158,7 @@ def interfaz(request):
         messages.success(request, '¡Reserva realizada con éxito!')
         return redirect('interfaz')
 
-    return render(request, 'index.html')
+    return render(request, 'interfaz.html')
 
 # 2. Al final de tu archivo, en la función index, TAMBIÉN BORRA:
 # from .models import Reserva  <-- BORRAR ESTA LÍNEA SI EXISTE
@@ -215,7 +215,3 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
-
-
-
-
