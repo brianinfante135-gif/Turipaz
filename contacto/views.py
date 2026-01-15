@@ -5,7 +5,8 @@ from django.conf import settings
 import hashlib
 import secrets
 import json
-
+# Usa el punto para referirte a los modelos de la misma carpeta 'contacto'
+from .models import Reserva, Usuario
 # Importa tus modelos y formularios DESDE TU APP (asumiendo que se llama 'contacto')
 from .models import Reservacion, DestinoTuristico, Usuario, Reserva 
 from .forms import ReservacionForm, DestinoTuristicoForm, UsuarioForm
@@ -225,4 +226,5 @@ def index(request):
     }
     
     return render(request, 'index.html', context)
+
 
