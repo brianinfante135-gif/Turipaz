@@ -191,9 +191,18 @@ def reservacion(request):
 
 def index(request):
     if request.method == 'POST':
-        # ... (tu código de captura de datos igual) ...
+        # DEBES DEFINIR LAS VARIABLES AQUÍ (Esto es lo que falta)
+        nombre = request.POST.get('name')
+        email = request.POST.get('email')
+        telefono = request.POST.get('phone')
+        destino = request.POST.get('destination')
+        fecha = request.POST.get('date')
+        personas = request.POST.get('people')
+        mensaje = request.POST.get('message')
+
+        # Ahora sí, creamos el registro
         Reservacion.objects.create(
-            nombre=nombre,
+            nombre=nombre,        # Asegúrate que 'nombre' coincida con tu models.py
             email=email,
             telefono=telefono,
             destino=destino,
@@ -201,13 +210,11 @@ def index(request):
             personas=personas,
             mensaje=mensaje
         )
-        return redirect('index') 
+        return redirect('index')
 
-    # --- LO QUE DEBES AGREGAR ---
-    # Consultamos todas las reservaciones para enviarlas a la tabla
-    todas_las_reservas = Reservacion.objects.all()
-    
-    # Pasamos los datos al template usando un diccionario
-    return render(request, 'index.html', {'mis_reservas': todas_las_reservas})
+    # Para mostrar la tabla, recuerda pasar los datos
+    reservas = Reservacion.objects.all()
+    return render(request, 'index.html', {'mis_reservas': reservas})
+
 
 
