@@ -142,10 +142,36 @@ Equipo Turipaz
 
 # Vista para interfaz
 def interfaz(request):
-    # Verificar si el usuario está logueado
+    # 1. Verificar si el usuario está logueado
     if 'user_id' not in request.session:
-        return redirect('inicio')
-    return render(request, 'interfaz.html')
+        return redirect('index')
+
+    # 2. Si el usuario envía el formulario de reserva (POST)
+    if request.method == 'POST':
+        nombre = request.POST.get('name')
+        email = request.POST.get('email')
+        telefono = request.POST.get('phone')
+        destino = request.POST.get('destination')
+        fecha = request.POST.get('date')
+        personas = request.POST.get('people')
+        mensaje = request.POST.get('message')
+
+        # Guardar en la base de datos
+        from .models import Reserva # Import local para evitar errores de carga circular
+        Reserva.objects.create(
+            nombre=nombre,
+            email=email,
+            telefono=telefono,
+            destino=destino,
+            fecha=fecha,
+            personas=personas,
+            mensaje=mensaje
+        )
+        messages.success(request, '¡Reserva realizada con éxito!')
+        return redirect('index')
+
+    # 3. Si solo entra a ver la página (GET)
+    return render(request, 'index.html')
 
 # Resto de vistas
 def tur1(request):
@@ -199,3 +225,4 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
+
