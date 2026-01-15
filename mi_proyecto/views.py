@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from contacto.models import Usuario
+from contacto.models import Usuario, Reservaciones
 import hashlib
 from django.core.mail import send_mail
 from django.conf import settings
@@ -225,4 +225,5 @@ def index(request):
 
     # Si es un GET (entrar normal a la página), solo muestra el HTML
     return render(request, 'index.html')
+
 
