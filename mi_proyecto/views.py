@@ -167,4 +167,9 @@ def tur6(request):
     return render(request, 'tur6.html')
 
 def reservacion(request):
+
     return render(request, 'reservacion.html')
+
+def index(request): # <--- Verifica que se llame así
+    # ... tu lógica del CRUD ...
+    return render(request, 'index.html') # <--- Verifica el nombre del HTML
