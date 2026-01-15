@@ -17,6 +17,6 @@ urlpatterns = [
     path('tur4/', views.tur4, name='tur4'),
     path('tur5/', views.tur5, name='tur5'),
     path('tur6/', views.tur6, name='tur6'),
-    
+    path('index/', views.index, name='index'),
    
 ]
