@@ -3,7 +3,6 @@ from . import views # El punto (.) es clave aquí
 
 urlpatterns = [
     path('', views.inicio, name='inicio'),
-    path('contacto/', views.contacto, name='contacto'),
     path('interfaz/', views.interfaz, name='interfaz'),
     path('registro/', views.registro, name='registro'),
     path('recuperar_password/', views.recuperar_password, name='recuperar_password'),
@@ -16,4 +15,5 @@ urlpatterns = [
     path('tur6/', views.tur6, name='tur6'),
     path('index/', views.index, name='index'), # Tu CRUD
 ]
+
 
