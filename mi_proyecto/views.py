@@ -170,6 +170,32 @@ def reservacion(request):
 
     return render(request, 'reservacion.html')
 
-def index(request): # <--- Verifica que se llame así
-    # ... tu lógica del CRUD ...
-    return render(request, 'index.html') # <--- Verifica el nombre del HTML
+from django.shortcuts import render, redirect
+from .models import Reserva # Asegúrate de importar tu modelo
+
+def index(request):
+    if request.method == 'POST':
+        # 1. Capturar los datos del formulario (los 'name' del HTML)
+        nombre = request.POST.get('name')
+        email = request.POST.get('email')
+        telefono = request.POST.get('phone')
+        destino = request.POST.get('destination')
+        fecha = request.POST.get('date')
+        personas = request.POST.get('people')
+        mensaje = request.POST.get('message')
+
+        # 2. Crear el registro en la base de datos
+        Reserva.objects.create(
+            nombre=nombre,
+            email=email,
+            telefono=telefono,
+            destino=destino,
+            fecha=fecha,
+            personas=personas,
+            mensaje=mensaje
+        )
+        # 3. Después de guardar, recarga la página
+        return redirect('index') 
+
+    # Si es un GET (entrar normal a la página), solo muestra el HTML
+    return render(request, 'index.html')
