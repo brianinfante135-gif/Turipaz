@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TURIPAZ - Sistema de Gestión</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        
+        nav { background: #2563eb; color: white; padding: 1rem; }
+        nav h1 { font-size: 1.5rem; }
+        
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: white; border: none; cursor: pointer; border-radius: 5px; }
+        .tab.active { background: #2563eb; color: white; }
+        
+        .section { display: none; background: white; padding: 20px; border-radius: 5px; }
+        .section.active { display: block; }
+        
+        .messages { background: #10b981; color: white; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table th, table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        table th { background: #f3f4f6; font-weight: bold; }
+        
+        .btn { padding: 5px 15px; border: none; border-radius: 3px; cursor: pointer; margin: 2px; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-edit { background: #f59e0b; color: white; }
+        
+        form { margin-top: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px;
+        }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                 background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close { font-size: 30px; cursor: pointer; }
+        
+        .badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; }
+        .badge-success { background: #10b981; color: white; }
+        .badge-warning { background: #f59e0b; color: white; }
+        .badge-danger { background: #ef4444; color: white; }
+        .badge-info { background: #3b82f6; color: white; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>🏖️ TURIPAZ - Los Reyes La Paz</h1>
+    </nav>
+
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('reservaciones')">📅 Reservaciones</button>
+            <button class="tab" onclick="showTab('destinos')">🗺️ Destinos</button>
+            <button class="tab" onclick="showTab('usuarios')">👥 Usuarios</button>
+        </div>
+
+        <!-- SECCIÓN RESERVACIONES -->
+        <div id="reservaciones" class="section active">
+            <h2>Reservaciones</h2>
+            <button class="btn btn-success" onclick="openModal('reservacion', 'crear')">+ Nueva Reservación</button>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Destino</th>
+                        <th>Fecha</th>
+                        <th>Personas</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reservaciones %}
+                    <tr>
+                        <td>{{ r.id }}</td>
+                        <td>{{ r.nombre_completo }}</td>
+                        <td>{{ r.email }}</td>
+                        <td>{{ r.telefono }}</td>
+                        <td>{{ r.get_destino_display }}</td>
+                        <td>{{ r.fecha_visita }}</td>
+                        <td>{{ r.numero_personas }}</td>
+                        <td>
+                            {% if r.estado == 'confirmada' %}
+                                <span class="badge badge-success">Confirmada</span>
+                            {% elif r.estado == 'pendiente' %}
+                                <span class="badge badge-warning">Pendiente</span>
+                            {% elif r.estado == 'cancelada' %}
+                                <span class="badge badge-danger">Cancelada</span>
+                            {% else %}
+                                <span class="badge badge-info">Completada</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-edit" onclick='editReservacion({{ r.id }}, "{{ r.nombre_completo }}", "{{ r.email }}", "{{ r.telefono }}", "{{ r.destino }}", "{{ r.fecha_visita }}", {{ r.numero_personas }}, "{{ r.estado }}", "{{ r.comentarios }}")'>Editar</button>
+                            <button class="btn btn-danger" onclick="deleteItem('reservacion', {{ r.id }}, '{{ r.nombre_completo }}')">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECCIÓN DESTINOS -->
+        <div id="destinos" class="section">
+            <h2>Destinos Turísticos</h2>
+            <button class="btn btn-success" onclick="openModal('destino', 'crear')">+ Nuevo Destino</button>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Capacidad</th>
+                        <th>Precio</th>
+                        <th>Horario</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in destinos %}
+                    <tr>
+                        <td>{{ d.id }}</td>
+                        <td>{{ d.nombre }}</td>
+                        <td>{{ d.descripcion|truncatewords:10 }}</td>
+                        <td>{{ d.capacidad_maxima }}</td>
+                        <td>${{ d.precio_entrada }}</td>
+                        <td>{{ d.horario_apertura }} - {{ d.horario_cierre }}</td>
+                        <td>{% if d.activo %}<span class="badge badge-success">Sí</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</td>
+                        <td>
+                            <button class="btn btn-edit" onclick='editDestino({{ d.id }}, "{{ d.nombre }}", "{{ d.descripcion }}", {{ d.capacidad_maxima }}, {{ d.precio_entrada }}, "{{ d.horario_apertura }}", "{{ d.horario_cierre }}", {{ d.activo|lower }})'>Editar</button>
+                            <button class="btn btn-danger" onclick="deleteItem('destino', {{ d.id }}, '{{ d.nombre }}')">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECCIÓN USUARIOS -->
+        <div id="usuarios" class="section">
+            <h2>Usuarios</h2>
+            <button class="btn btn-success" onclick="openModal('usuario', 'crear')">+ Nuevo Usuario</button>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Username</th>
+                        <th>Correo</th>
+                        <th>Edad</th>
+                        <th>Fecha Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in usuarios %}
+                    <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.nombre }}</td>
+                        <td>{{ u.apellido }}</td>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.correo }}</td>
+                        <td>{{ u.edad }}</td>
+                        <td>{{ u.fecha_registro|date:"d/m/Y" }}</td>
+                        <td>
+                            <button class="btn btn-edit" onclick='editUsuario({{ u.id }}, "{{ u.nombre }}", "{{ u.apellido }}", "{{ u.correo }}", {{ u.edad }}, "{{ u.username }}")'>Editar</button>
+                            <button class="btn btn-danger" onclick="deleteItem('usuario', {{ u.id }}, '{{ u.username }}')">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL PARA FORMULARIOS -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Formulario</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form method="post" id="modal-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="tipo" id="form-tipo">
+                <input type="hidden" name="accion" id="form-accion">
+                <input type="hidden" name="id" id="form-id">
+                <div id="form-fields"></div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function openModal(tipo, accion) {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('form-tipo').value = tipo;
+            document.getElementById('form-accion').value = accion;
+            document.getElementById('modal-title').textContent = (accion === 'crear' ? 'Crear' : 'Editar') + ' ' + tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            document.getElementById('form-id').value = '';
+            loadForm(tipo, accion);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function loadForm(tipo, accion) {
+            let html = '';
+            if (tipo === 'reservacion') {
+                html = `
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" name="nombre_completo" id="nombre_completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" name="telefono" id="telefono" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Destino</label>
+                        <select name="destino" id="destino" required>
+                            <option value="zona_arqueologica">Zona Arqueológica</option>
+                            <option value="parque_soraya">Parque Soraya Jiménez</option>
+                            <option value="santa_marta">Santa Marta</option>
+                            <option value="parroquia_divino">Parroquia Divino Salvador</option>
+                            <option value="volcan_caldera">Volcán de la Caldera</option>
+                            <option value="parque_ciencia">Parque de la Ciencia</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Visita</label>
+                        <input type="date" name="fecha_visita" id="fecha_visita" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Personas</label>
+                        <input type="number" name="numero_personas" id="numero_personas" min="1" max="50" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select name="estado" id="estado" required>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="confirmada">Confirmada</option>
+                            <option value="cancelada">Cancelada</option>
+                            <option value="completada">Completada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Comentarios</label>
+                        <textarea name="comentarios" id="comentarios" rows="3"></textarea>
+                    </div>
+                `;
+            } else if (tipo === 'destino') {
+                html = `
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea name="descripcion" id="descripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacidad Máxima</label>
+                        <input type="number" name="capacidad_maxima" id="capacidad_maxima" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio de Entrada</label>
+                        <input type="number" name="precio_entrada" id="precio_entrada" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horario Apertura</label>
+                        <input type="time" name="horario_apertura" id="horario_apertura">
+                    </div>
+                    <div class="form-group">
+                        <label>Horario Cierre</label>
+                        <input type="time" name="horario_cierre" id="horario_cierre">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="activo" id="activo" value="true" checked> Activo
+                        </label>
+                    </div>
+                `;
+            } else if (tipo === 'usuario') {
+                html = `
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" name="apellido" id="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo</label>
+                        <input type="email" name="correo" id="correo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <input type="number" name="edad" id="edad" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" id="password" ${accion === 'crear' ? 'required' : ''}>
+                    </div>
+                `;
+            }
+            document.getElementById('form-fields').innerHTML = html;
+        }
+
+        function editReservacion(id, nombre, email, telefono, destino, fecha, personas, estado, comentarios) {
+            openModal('reservacion', 'editar');
+            document.getElementById('form-id').value = id;
+            document.getElementById('nombre_completo').value = nombre;
+            document.getElementById('email').value = email;
+            document.getElementById('telefono').value = telefono;
+            document.getElementById('destino').value = destino;
+            document.getElementById('fecha_visita').value = fecha;
+            document.getElementById('numero_personas').value = personas;
+            document.getElementById('estado').value = estado;
+            document.getElementById('comentarios').value = comentarios;
+        }
+
+        function editDestino(id, nombre, descripcion, capacidad, precio, apertura, cierre, activo) {
+            openModal('destino', 'editar');
+            document.getElementById('form-id').value = id;
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('descripcion').value = descripcion;
+            document.getElementById('capacidad_maxima').value = capacidad;
+            document.getElementById('precio_entrada').value = precio;
+            document.getElementById('horario_apertura').value = apertura;
+            document.getElementById('horario_cierre').value = cierre;
+            document.getElementById('activo').checked = activo;
+        }
+
+        function editUsuario(id, nombre, apellido, correo, edad, username) {
+            openModal('usuario', 'editar');
+            document.getElementById('form-id').value = id;
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('apellido').value = apellido;
+            document.getElementById('correo').value = correo;
+            document.getElementById('edad').value = edad;
+            document.getElementById('username').value = username;
+        }
+
+        function deleteItem(tipo, id, nombre) {
+            if (confirm('¿Está seguro de eliminar: ' + nombre + '?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.innerHTML = `
+                    {% csrf_token %}
+                    <input type="hidden" name="tipo" value="${tipo}">
+                    <input type="hidden" name="accion" value="eliminar">
+                    <input type="hidden" name="id" value="${id}">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>
