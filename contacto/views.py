@@ -8,6 +8,10 @@ import hashlib
 import secrets
 import json
 from datetime import datetime
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Reservacion, DestinoTuristico, Usuario
+from .forms import ReservacionForm, DestinoTuristicoForm, UsuarioForm
 
 # --- VISTAS PRINCIPALES ---
 
@@ -111,3 +115,96 @@ def tur6(request):
 def reservacion(request):
     # Si solo quieres que cargue la página por ahora:
     return render(request, 'reservacion.html')
+
+def index(request):
+    # Obtener todos los datos
+    reservaciones = Reservacion.objects.filter(activo=True).order_by('-fecha_creacion')
+    destinos = DestinoTuristico.objects.filter(activo=True)
+    usuarios = Usuario.objects.all()
+    
+    # Manejar formularios
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        tipo = request.POST.get('tipo')
+        
+        # RESERVACIONES
+        if tipo == 'reservacion':
+            if accion == 'crear':
+                form = ReservacionForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Reservación creada exitosamente')
+                    return redirect('index')
+            elif accion == 'editar':
+                pk = request.POST.get('id')
+                reservacion = get_object_or_404(Reservacion, pk=pk)
+                form = ReservacionForm(request.POST, instance=reservacion)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Reservación actualizada')
+                    return redirect('index')
+            elif accion == 'eliminar':
+                pk = request.POST.get('id')
+                reservacion = get_object_or_404(Reservacion, pk=pk)
+                reservacion.activo = False
+                reservacion.save()
+                messages.success(request, 'Reservación eliminada')
+                return redirect('index')
+        
+        # DESTINOS
+        elif tipo == 'destino':
+            if accion == 'crear':
+                form = DestinoTuristicoForm(request.POST, request.FILES)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Destino creado exitosamente')
+                    return redirect('index')
+            elif accion == 'editar':
+                pk = request.POST.get('id')
+                destino = get_object_or_404(DestinoTuristico, pk=pk)
+                form = DestinoTuristicoForm(request.POST, request.FILES, instance=destino)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Destino actualizado')
+                    return redirect('index')
+            elif accion == 'eliminar':
+                pk = request.POST.get('id')
+                destino = get_object_or_404(DestinoTuristico, pk=pk)
+                destino.activo = False
+                destino.save()
+                messages.success(request, 'Destino eliminado')
+                return redirect('index')
+        
+        # USUARIOS
+        elif tipo == 'usuario':
+            if accion == 'crear':
+                form = UsuarioForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Usuario creado exitosamente')
+                    return redirect('index')
+            elif accion == 'editar':
+                pk = request.POST.get('id')
+                usuario = get_object_or_404(Usuario, pk=pk)
+                form = UsuarioForm(request.POST, instance=usuario)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Usuario actualizado')
+                    return redirect('index')
+            elif accion == 'eliminar':
+                pk = request.POST.get('id')
+                usuario = get_object_or_404(Usuario, pk=pk)
+                usuario.delete()
+                messages.success(request, 'Usuario eliminado')
+                return redirect('index')
+    
+    context = {
+        'reservaciones': reservaciones,
+        'destinos': destinos,
+        'usuarios': usuarios,
+        'form_reservacion': ReservacionForm(),
+        'form_destino': DestinoTuristicoForm(),
+        'form_usuario': UsuarioForm(),
+    }
+    
+    return render(request, 'index.html', context)
