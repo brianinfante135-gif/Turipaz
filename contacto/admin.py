@@ -1,11 +1,4 @@
 from django.contrib import admin
-from .models import Reservacion, Estadistica, DestinoTuristico
-
-admin.site.register(Reservacion)
-admin.site.register(Estadistica)
-admin.site.register(DestinoTuristico)
-
-from django.contrib import admin
 from .models import Reservacion, DestinoTuristico, Usuario, Estadistica
 
 @admin.register(Reservacion)
@@ -36,4 +29,4 @@ class EstadisticaAdmin(admin.ModelAdmin):
     list_display = ['fecha', 'total_reservaciones', 'total_visitantes', 'destino_mas_popular']
     ordering = ['-fecha']
     date_hierarchy = 'fecha'
-  
+
