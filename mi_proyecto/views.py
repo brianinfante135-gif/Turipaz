@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
-from contacto.models import Usuario, Reservacion
+from contacto.models import Usuario, Reservacion, DestinoTuristico
 import hashlib
 from django.core.mail import send_mail
 from django.conf import settings
@@ -152,7 +152,17 @@ def interfaz(request):
 def index(request):
     if request.method == 'POST':
         try:
-            # 1. Capturamos los datos probando ambos nombres (el de la web o el del panel)
+            # 1. Identificar acción (para el CRUD del panel)
+            accion = request.POST.get('accion')
+            tipo = request.POST.get('tipo')
+
+            # Lógica para ELIMINAR
+            if accion == 'eliminar':
+                id_item = request.POST.get('id')
+                Reservacion.objects.filter(id=id_item).delete()
+                return redirect('index')
+
+            # 2. Captura de datos (mapeo doble para interfaz.html e index.html)
             nombre = request.POST.get('name') or request.POST.get('nombre_completo')
             email = request.POST.get('email')
             telefono = request.POST.get('phone') or request.POST.get('telefono')
@@ -161,21 +171,12 @@ def index(request):
             personas = request.POST.get('people') or request.POST.get('numero_personas')
             mensaje = request.POST.get('message', '') or request.POST.get('comentarios', '')
             
-            # 2. Capturamos tipo y accion para el CRUD del panel
-            tipo = request.POST.get('tipo')
-            accion = request.POST.get('accion')
-
-            # Si la acción es eliminar
-            if accion == 'eliminar':
-                id_item = request.POST.get('id')
-                Reservacion.objects.filter(id=id_item).delete()
-                return redirect('index')
-
-            # 3. Validar que no falten datos antes de crear
+            # 3. Validación básica
             if not all([nombre, email, telefono, destino, fecha, personas]):
                 return JsonResponse({'status': 'error', 'message': 'Faltan campos obligatorios'}, status=400)
 
-            # 4. Crear la reservación
+            # 4. Guardar en la base de datos
+            # Nota: Usamos los valores que ya validaste en el HTML (ej: 'volcan_caldera')
             reserva = Reservacion.objects.create(
                 nombre_completo=nombre,
                 email=email,
@@ -184,33 +185,32 @@ def index(request):
                 fecha_visita=fecha,
                 numero_personas=int(personas),
                 comentarios=mensaje,
-                estado=request.POST.get('estado', 'pendiente') # Por si viene del panel
+                estado=request.POST.get('estado', 'pendiente')
             )
             
-            # Si la petición es AJAX (de la web) enviamos JSON, si no, redireccionamos
+            print(f"✅ Reserva guardada con éxito. ID: {reserva.id}")
+
+            # 5. Respuesta según el origen
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'status': 'success', 'message': 'Reserva guardada'})
+                return JsonResponse({'status': 'success', 'message': 'Reserva guardada correctamente'})
+            
             return redirect('index')
 
         except Exception as e:
+            print(f"❌ Error en POST index: {e}")
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-    # --- ESTO ES LO QUE HACE QUE LA TABLA SE LLENE ---
-    # Al entrar a /index/ por GET, consultamos la base de datos
+    # --- LÓGICA PARA MOSTRAR LA TABLA (GET) ---
+    # Esto es lo que hace que tu tabla deje de estar vacía
+    todas_las_reservas = Reservacion.objects.all().order_by('-fecha_creacion')
+    todos_los_destinos = DestinoTuristico.objects.all()
+
     contexto = {
-        'reservaciones': Reservacion.objects.all(),
-        'destinos': DestinoTuristico.objects.all(),
+        'reservaciones': todas_las_reservas, # Debe ser 'reservaciones' para tu HTML
+        'destinos': todos_los_destinos,
     }
-    return render(request, 'index.html', contexto)
     
-    # Si es GET, mostrar la página principal
-    return render(request, 'index.html')
-    # Revisa esta parte en tu views.py para la URL /index/
-def lista_reservas(request):
-    # Esto trae TODAS las reservas de la base de datos
-    reservas = Reservacion.objects.all() 
-    # Esto las manda al HTML
-    return render(request, 'index.html', {'reservas': reservas})
+    return render(request, 'index.html', contexto)
 
 # Resto de vistas de destinos turísticos
 def tur1(request):
@@ -238,6 +238,7 @@ def reservacion(request):
     
     reservas = Reservacion.objects.all().order_by('-fecha_creacion')
     return render(request, 'reservacion.html', {'reservas': reservas})
+
 
 
 
