@@ -214,22 +214,22 @@ def index(request):
 
 # Resto de vistas de destinos turísticos
 def tur1(request):
-    return render(request, 'interfaz/tur1.html')
+    return render(request, 'tur1.html')
 
 def tur2(request):
-    return render(request, 'interfaz/tur2.html')
+    return render(request, 'tur2.html')
 
 def tur3(request):
-    return render(request, 'interfaz/tur3.html')
+    return render(request, 'tur3.html')
 
 def tur4(request):
-    return render(request, 'interfaz/tur4.html')
+    return render(request, 'tur4.html')
 
 def tur5(request):
-    return render(request, 'interfaz/tur5.html')
+    return render(request, 'tur5.html')
 
 def tur6(request):
-    return render(request, 'interfaz/tur6.html')
+    return render(request, 'tur6.html')
 
 # Vista para ver todas las reservaciones (opcional - para admin)
 def reservacion(request):
@@ -238,6 +238,7 @@ def reservacion(request):
     
     reservas = Reservacion.objects.all().order_by('-fecha_creacion')
     return render(request, 'reservacion.html', {'reservas': reservas})
+
 
 
 
