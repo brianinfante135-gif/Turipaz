@@ -22,7 +22,7 @@ def inicio(request):
             request.session['user_id'] = str(usuario.id)
             request.session['username'] = usuario.username
             request.session['nombre_completo'] = f"{usuario.nombre} {usuario.apellido}"
-            return redirect('index')  # Cambiado a 'index' para que vaya a la página principal
+            return redirect('interfaz')  # Cambiado a 'index' para que vaya a la página principal
         except Usuario.DoesNotExist:
             messages.error(request, 'Usuario o contraseña incorrectos')
     
