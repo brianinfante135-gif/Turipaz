@@ -72,7 +72,7 @@ def registro(request):
             request.session['nombre_completo'] = f"{nuevo_usuario.nombre} {nuevo_usuario.apellido}"
             
             messages.success(request, f'¡Bienvenido {nombre}!')
-            return redirect('index')
+            return redirect('inicio')
             
         except ValueError as ve:
             print(f"Error de validación: {str(ve)}")
@@ -238,6 +238,7 @@ def reservacion(request):
     
     reservas = Reservacion.objects.all().order_by('-fecha_creacion')
     return render(request, 'reservacion.html', {'reservas': reservas})
+
 
 
 
