@@ -601,66 +601,59 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2><i class="fas fa-calendar-alt"></i> Reserva tu Visita</h2>
+            
             <form id="reserveForm" method="POST" action="{% url 'index' %}">
-    {% csrf_token %}
-    <button type="submit">Enviar Reserva</button>
-</form>
-              <div id="reserveModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2><i class="fas fa-calendar-alt"></i> Reserva tu Visita</h2>
-        
-        <form id="reserveForm" method="POST" action="{% url 'index' %}">
-            {% csrf_token %}
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label for="name"><i class="fas fa-user"></i> Nombre Completo *</label>
-                <input type="text" id="name" name="name" required placeholder="Ingresa tu nombre completo">
-            </div>
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Nombre Completo *</label>
+                    <input type="text" id="name" name="name" required placeholder="Ingresa tu nombre completo">
+                </div>
 
-            <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico *</label>
-                <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com">
-            </div>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico *</label>
+                    <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com">
+                </div>
 
-            <div class="form-group">
-                <label for="phone"><i class="fas fa-phone"></i> Teléfono *</label>
-                <input type="tel" id="phone" name="phone" required placeholder="10 dígitos" pattern="[0-9]{10}">
-            </div>
+                <div class="form-group">
+                    <label for="phone"><i class="fas fa-phone"></i> Teléfono *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="10 dígitos" pattern="[0-9]{10}">
+                </div>
 
-            <div class="form-group">
-                <label for="destination"><i class="fas fa-map-marker-alt"></i> Destino *</label>
-                <select id="destination" name="destination" required>
-                    <option value="">Selecciona un destino</option>
-                    <option value="zona-arqueologica">Zona Arqueológica</option>
-                    <option value="parque-soraya">Parque Soraya Jiménez</option>
-                    <option value="santa-marta">Santa Marta</option>
-                    <option value="parroquia">Parroquia Divino Salvador</option>
-                    <option value="volcan">Volcán de la Caldera</option>
-                    <option value="parque-ciencia">Parque de la Ciencia</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="destination"><i class="fas fa-map-marker-alt"></i> Destino *</label>
+                    <select id="destination" name="destination" required>
+                        <option value="">Selecciona un destino</option>
+                        <option value="zona-arqueologica">Zona Arqueológica</option>
+                        <option value="parque-soraya">Parque Soraya Jiménez</option>
+                        <option value="santa-marta">Santa Marta</option>
+                        <option value="parroquia">Parroquia Divino Salvador</option>
+                        <option value="volcan">Volcán de la Caldera</option>
+                        <option value="parque-ciencia">Parque de la Ciencia</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="date"><i class="fas fa-calendar"></i> Fecha de Visita *</label>
-                <input type="date" id="date" name="date" required>
-            </div>
+                <div class="form-group">
+                    <label for="date"><i class="fas fa-calendar"></i> Fecha de Visita *</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
 
-            <div class="form-group">
-                <label for="people"><i class="fas fa-users"></i> Número de Personas *</label>
-                <input type="number" id="people" name="people" min="1" max="50" required>
-            </div>
+                <div class="form-group">
+                    <label for="people"><i class="fas fa-users"></i> Número de Personas *</label>
+                    <input type="number" id="people" name="people" min="1" max="50" required>
+                </div>
 
-            <div class="form-group">
-                <label for="message"><i class="fas fa-comment"></i> Comentarios Adicionales</label>
-                <textarea id="message" name="message" placeholder="Información adicional..."></textarea>
-            </div>
+                <div class="form-group">
+                    <label for="message"><i class="fas fa-comment"></i> Comentarios Adicionales</label>
+                    <textarea id="message" name="message" placeholder="Información adicional..."></textarea>
+                </div>
 
-            <button type="submit" class="submit-btn">
-                <i class="fas fa-paper-plane"></i> Enviar Reserva
-            </button>
-        </form> </div>
-</div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Enviar Reserva
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Modal de TuriPaz IA -->
     <div id="aiModal" class="modal">
@@ -685,10 +678,70 @@
     </div>
 
     <script>
-        // Variables globales para la IA
-        let aiConversationHistory = [];
-        
-        const aiSystemPrompt = `Eres TuriPaz, un asistente de IA especializado EXCLUSIVAMENTE en turismo de Los Reyes La Paz, Estado de México. 
+// ============================================
+// FUNCIONES PARA MODALES
+// ============================================
+
+function openModal() {
+    const modal = document.getElementById("reserveModal");
+    if (modal) {
+        modal.style.display = "block";
+        console.log("Modal de reserva abierto");
+    } else {
+        console.error("No se encontró el modal de reserva");
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById("reserveModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+function openAIModal() {
+    const modal = document.getElementById("aiModal");
+    if (modal) {
+        modal.style.display = "block";
+        console.log("Modal de IA abierto");
+    } else {
+        console.error("No se encontró el modal de IA");
+    }
+}
+
+function closeAIModal() {
+    const modal = document.getElementById("aiModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+window.onclick = function(event) {
+    const reserveModal = document.getElementById('reserveModal');
+    const aiModal = document.getElementById('aiModal');
+    
+    if (event.target === reserveModal) {
+        closeModal();
+    }
+    if (event.target === aiModal) {
+        closeAIModal();
+    }
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+        closeAIModal();
+    }
+});
+
+// ============================================
+// FUNCIONES PARA IA
+// ============================================
+
+let aiConversationHistory = [];
+
+const aiSystemPrompt = `Eres TuriPaz, un asistente de IA especializado EXCLUSIVAMENTE en turismo de Los Reyes La Paz, Estado de México. 
 
 INFORMACIÓN CLAVE que DEBES conocer:
 
@@ -711,185 +764,100 @@ Tu personalidad:
 - Amigable, entusiasta y conocedor
 - Usas emojis relacionados con turismo: ✈️ 🗺️ 🏔️ 🌴 🎒 📸 🍴
 - Respondes SOLO sobre Los Reyes La Paz
-- Si preguntan de otros lugares, rediriges amablemente al municipio
+- Si preguntan de otros lugares, rediriges amablemente al municipio`;
 
-IMPORTANTE: Si te preguntan sobre destinos FUERA de Los Reyes La Paz, responde: "Mi especialidad es Los Reyes La Paz 🏛️ Sin embargo, puedo contarte cómo este municipio se compara con otros lugares o por qué deberías visitarlo. ¿Te gustaría saber más sobre nuestros 6 destinos principales?"`;
-
-        // Funciones del modal de reserva
-  function openModal() {
-        const modal = document.getElementById("reserveModal");
-        if (modal) {
-            modal.style.display = "block";
-        }
-    }
-
-    // Función para abrir el modal de la IA
-    function openAIModal() {
-        const modal = document.getElementById("aiModal");
-        if (modal) {
-            modal.style.display = "block";
-        }
-    }
-
-    // Funciones para cerrar
-    function closeModal() {
-        document.getElementById("reserveModal").style.display = "none";
-    }
-
-    function closeAIModal() {
-        document.getElementById("aiModal").style.display = "none";
-    }
-
-    // Cerrar si hacen clic fuera de la caja
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = "none";
-        }
-    }
-
-        function addAIMessage(content, isUser) {
-            const chatContainer = document.getElementById('aiChatContainer');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `ai-message ${isUser ? 'user' : 'ai'}`;
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'ai-message-content';
-            contentDiv.textContent = content;
-            
-            messageDiv.appendChild(contentDiv);
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function showAITyping() {
-            const chatContainer = document.getElementById('aiChatContainer');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'ai-message ai';
-            typingDiv.id = 'aiTyping';
-            typingDiv.innerHTML = '<div class="ai-message-content ai-typing"><span></span><span></span><span></span></div>';
-            chatContainer.appendChild(typingDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function removeAITyping() {
-            const typing = document.getElementById('aiTyping');
-            if (typing) typing.remove();
-        }
-
-        async function sendAIMessage() {
-            const input = document.getElementById('aiInput');
-            const sendBtn = document.getElementById('aiSendBtn');
-            const message = input.value.trim();
-            
-            if (!message) return;
-
-            addAIMessage(message, true);
-            input.value = '';
-            sendBtn.disabled = true;
-            showAITyping();
-
-            aiConversationHistory.push({
-                role: "user",
-                content: message
-            });
-
-            try {
-                const messages = [
-                    { role: "user", content: aiSystemPrompt },
-                    ...aiConversationHistory
-                ];
-
-                const response = await fetch("https://api.anthropic.com/v1/messages", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        model: "claude-sonnet-4-20250514",
-                        max_tokens: 1000,
-                        messages: messages
-                    })
-                });
-
-                const data = await response.json();
-                removeAITyping();
-
-                if (data.content && data.content[0]) {
-                    const aiResponse = data.content[0].text;
-                    addAIMessage(aiResponse, false);
-                    
-                    aiConversationHistory.push({
-                        role: "assistant",
-                        content: aiResponse
-                    });
-                } else {
-                    addAIMessage("Lo siento, hubo un error. Por favor intenta de nuevo.", false);
-                }
-            } catch (error) {
-                removeAITyping();
-                addAIMessage("Error al conectar con TuriPaz IA. Intenta nuevamente.", false);
-                console.error(error);
-            }
-
-            sendBtn.disabled = false;
-            input.focus();
-        }
-
-        // Event listeners
-        document.getElementById('aiSendBtn').addEventListener('click', sendAIMessage);
-        document.getElementById('aiInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendAIMessage();
-        });
-
-        // Cerrar modales con click fuera o ESC
-        window.onclick = function(event) {
-            const reserveModal = document.getElementById('reserveModal');
-            const aiModal = document.getElementById('aiModal');
-            if (event.target == reserveModal) closeModal();
-            if (event.target == aiModal) closeAIModal();
-        }
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-                closeAIModal();
-            }
-        });
-
-        // Establecer fecha mínima como hoy
-        document.getElementById('date').min = new Date().toISOString().split('T')[0];
-
-        function handleSubmit(event) {
-    event.preventDefault();
+function addAIMessage(content, isUser) {
+    const chatContainer = document.getElementById('aiChatContainer');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `ai-message ${isUser ? 'user' : 'ai'}`;
     
-    // Obtenemos el formulario y el token CSRF que Django necesita
-    const form = event.target;
-    const formData = new FormData(form);
-
-    // 1. Enviar los datos al servidor
-    fetch('/guardar-reserva/', {  // <--- Asegúrate que esta URL coincida con tu urls.py
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken') // Función necesaria para seguridad en Django
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('¡Reserva guardada en la base de datos! 🎉');
-            form.reset();
-            closeModal();
-        } else {
-            alert('Error al guardar la reserva.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('No se pudo conectar con el servidor.');
-    });
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'ai-message-content';
+    contentDiv.textContent = content;
+    
+    messageDiv.appendChild(contentDiv);
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// No olvides esta función para el token CSRF
+function showAITyping() {
+    const chatContainer = document.getElementById('aiChatContainer');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'ai-message ai';
+    typingDiv.id = 'aiTyping';
+    typingDiv.innerHTML = '<div class="ai-message-content ai-typing"><span></span><span></span><span></span></div>';
+    chatContainer.appendChild(typingDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function removeAITyping() {
+    const typing = document.getElementById('aiTyping');
+    if (typing) typing.remove();
+}
+
+async function sendAIMessage() {
+    const input = document.getElementById('aiInput');
+    const sendBtn = document.getElementById('aiSendBtn');
+    const message = input.value.trim();
+    
+    if (!message) return;
+
+    addAIMessage(message, true);
+    input.value = '';
+    sendBtn.disabled = true;
+    showAITyping();
+
+    aiConversationHistory.push({
+        role: "user",
+        content: message
+    });
+
+    try {
+        const messages = [
+            { role: "user", content: aiSystemPrompt },
+            ...aiConversationHistory
+        ];
+
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                model: "claude-sonnet-4-20250514",
+                max_tokens: 1000,
+                messages: messages
+            })
+        });
+
+        const data = await response.json();
+        removeAITyping();
+
+        if (data.content && data.content[0]) {
+            const aiResponse = data.content[0].text;
+            addAIMessage(aiResponse, false);
+            
+            aiConversationHistory.push({
+                role: "assistant",
+                content: aiResponse
+            });
+        } else {
+            addAIMessage("Lo siento, hubo un error. Por favor intenta de nuevo.", false);
+        }
+    } catch (error) {
+        removeAITyping();
+        addAIMessage("Error al conectar con TuriPaz IA. Intenta nuevamente.", false);
+        console.error(error);
+    }
+
+    sendBtn.disabled = false;
+    input.focus();
+}
+
+// ============================================
+// FUNCIONES PARA FORMULARIO DE RESERVA
+// ============================================
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -904,59 +872,84 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-            
-            console.log('Datos de reserva:', formData);
-            
+
+function handleReserveSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+
+    // Enviar datos al servidor Django
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Obtener datos del formulario para mostrar
             const destinationSelect = document.getElementById('destination');
             const destinationText = destinationSelect.options[destinationSelect.selectedIndex].text;
+            const date = document.getElementById('date').value;
+            const people = document.getElementById('people').value;
             
-            alert('¡Reserva enviada exitosamente! 🎉\n\nNos pondremos en contacto contigo pronto.\n\n' +
+            alert('¡Reserva enviada exitosamente! 🎉\n\n' +
+                  'Nos pondremos en contacto contigo pronto.\n\n' +
                   '📍 Destino: ' + destinationText + 
-                  '\n📅 Fecha: ' + formData.date + 
-                  '\n👥 Personas: ' + formData.people);
+                  '\n📅 Fecha: ' + date + 
+                  '\n👥 Personas: ' + people);
             
-            document.getElementById('reserveForm').reset();
+            form.reset();
             closeModal();
-            
-            // INTEGRACIÓN CON DJANGO (descomenta cuando estés listo)
-            /*
-            fetch('/guardar-reserva/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-            */
+        } else {
+            alert('Hubo un error al procesar tu reserva. Por favor intenta nuevamente.');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('No se pudo conectar con el servidor. Verifica tu conexión.');
+    });
+}
 
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+// ============================================
+// INICIALIZACIÓN AL CARGAR LA PÁGINA
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Página cargada - TuriPaz");
+    
+    // Configurar fecha mínima en el formulario
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        dateInput.min = new Date().toISOString().split('T')[0];
+    }
+    
+    // Configurar botón de envío de IA
+    const aiSendBtn = document.getElementById('aiSendBtn');
+    if (aiSendBtn) {
+        aiSendBtn.addEventListener('click', sendAIMessage);
+    }
+    
+    // Configurar input de IA para Enter
+    const aiInput = document.getElementById('aiInput');
+    if (aiInput) {
+        aiInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendAIMessage();
             }
-            return cookieValue;
-        }
-    </script>
+        });
+    }
+    
+    // Configurar formulario de reserva
+    const reserveForm = document.getElementById('reserveForm');
+    if (reserveForm) {
+        reserveForm.addEventListener('submit', handleReserveSubmit);
+    }
+    
+    console.log("Event listeners configurados correctamente");
+});
+</script>
 </body>
-
 </html>
-
-
-
-
