@@ -208,6 +208,12 @@ def index(request):
     
     # Si es GET, mostrar la página principal
     return render(request, 'index.html')
+    # Revisa esta parte en tu views.py para la URL /index/
+def lista_reservas(request):
+    # Esto trae TODAS las reservas de la base de datos
+    reservas = Reservacion.objects.all() 
+    # Esto las manda al HTML
+    return render(request, 'index.html', {'reservas': reservas})
 
 # Resto de vistas de destinos turísticos
 def tur1(request):
@@ -235,5 +241,6 @@ def reservacion(request):
     
     reservas = Reservacion.objects.all().order_by('-fecha_creacion')
     return render(request, 'reservacion.html', {'reservas': reservas})
+
 
 
