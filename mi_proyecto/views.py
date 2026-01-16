@@ -152,23 +152,30 @@ def interfaz(request):
 def index(request):
     if request.method == 'POST':
         try:
-            # Capturar datos del formulario
-            nombre = request.POST.get('name')
+            # 1. Capturamos los datos probando ambos nombres (el de la web o el del panel)
+            nombre = request.POST.get('name') or request.POST.get('nombre_completo')
             email = request.POST.get('email')
-            telefono = request.POST.get('phone')
-            destino = request.POST.get('destination')
-            fecha = request.POST.get('date')
-            personas = request.POST.get('people')
-            mensaje = request.POST.get('message', '')
+            telefono = request.POST.get('phone') or request.POST.get('telefono')
+            destino = request.POST.get('destination') or request.POST.get('destino')
+            fecha = request.POST.get('date') or request.POST.get('fecha_visita')
+            personas = request.POST.get('people') or request.POST.get('numero_personas')
+            mensaje = request.POST.get('message', '') or request.POST.get('comentarios', '')
             
-            # Validar que los campos obligatorios no estén vacíos
+            # 2. Capturamos tipo y accion para el CRUD del panel
+            tipo = request.POST.get('tipo')
+            accion = request.POST.get('accion')
+
+            # Si la acción es eliminar
+            if accion == 'eliminar':
+                id_item = request.POST.get('id')
+                Reservacion.objects.filter(id=id_item).delete()
+                return redirect('index')
+
+            # 3. Validar que no falten datos antes de crear
             if not all([nombre, email, telefono, destino, fecha, personas]):
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Todos los campos obligatorios deben estar llenos'
-                }, status=400)
-            
-            # Crear la reservación en la base de datos
+                return JsonResponse({'status': 'error', 'message': 'Faltan campos obligatorios'}, status=400)
+
+            # 4. Crear la reservación
             reserva = Reservacion.objects.create(
                 nombre_completo=nombre,
                 email=email,
@@ -176,35 +183,25 @@ def index(request):
                 destino=destino,
                 fecha_visita=fecha,
                 numero_personas=int(personas),
-                comentarios=mensaje
+                comentarios=mensaje,
+                estado=request.POST.get('estado', 'pendiente') # Por si viene del panel
             )
             
-            print(f"✅ Reserva guardada exitosamente - ID: {reserva.id}")
-            print(f"   Nombre: {nombre}")
-            print(f"   Destino: {destino}")
-            print(f"   Fecha: {fecha}")
-            
-            # Respuesta exitosa en formato JSON
-            return JsonResponse({
-                'status': 'success',
-                'message': 'Reserva guardada correctamente'
-            })
-            
-        except ValueError as ve:
-            print(f"❌ Error de valor: {ve}")
-            return JsonResponse({
-                'status': 'error',
-                'message': 'Error en el formato de los datos'
-            }, status=400)
-            
+            # Si la petición es AJAX (de la web) enviamos JSON, si no, redireccionamos
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'message': 'Reserva guardada'})
+            return redirect('index')
+
         except Exception as e:
-            print(f"❌ Error al guardar reserva: {e}")
-            import traceback
-            traceback.print_exc()
-            return JsonResponse({
-                'status': 'error',
-                'message': f'Error al procesar la reserva: {str(e)}'
-            }, status=500)
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    # --- ESTO ES LO QUE HACE QUE LA TABLA SE LLENE ---
+    # Al entrar a /index/ por GET, consultamos la base de datos
+    contexto = {
+        'reservaciones': Reservacion.objects.all(),
+        'destinos': DestinoTuristico.objects.all(),
+    }
+    return render(request, 'index.html', contexto)
     
     # Si es GET, mostrar la página principal
     return render(request, 'index.html')
@@ -241,6 +238,7 @@ def reservacion(request):
     
     reservas = Reservacion.objects.all().order_by('-fecha_creacion')
     return render(request, 'reservacion.html', {'reservas': reservas})
+
 
 
 
