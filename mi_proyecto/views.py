@@ -207,7 +207,7 @@ def index(request):
             }, status=500)
     
     # Si es GET, mostrar la página principal
-    return render(request, 'interfaz/index.html')
+    return render(request, 'interfaz.html')
 
 # Resto de vistas de destinos turísticos
 def tur1(request):
@@ -235,3 +235,4 @@ def reservacion(request):
     
     reservas = Reservacion.objects.all().order_by('-fecha_creacion')
     return render(request, 'reservacion.html', {'reservas': reservas})
+
