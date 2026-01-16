@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import JsonResponse
 from contacto.models import Usuario, Reservacion
 import hashlib
 from django.core.mail import send_mail
@@ -21,7 +22,7 @@ def inicio(request):
             request.session['user_id'] = str(usuario.id)
             request.session['username'] = usuario.username
             request.session['nombre_completo'] = f"{usuario.nombre} {usuario.apellido}"
-            return redirect('interfaz')
+            return redirect('index')  # Cambiado a 'index' para que vaya a la página principal
         except Usuario.DoesNotExist:
             messages.error(request, 'Usuario o contraseña incorrectos')
     
@@ -71,7 +72,7 @@ def registro(request):
             request.session['nombre_completo'] = f"{nuevo_usuario.nombre} {nuevo_usuario.apellido}"
             
             messages.success(request, f'¡Bienvenido {nombre}!')
-            return redirect('interfaz')
+            return redirect('index')
             
         except ValueError as ve:
             print(f"Error de validación: {str(ve)}")
@@ -140,81 +141,97 @@ Equipo Turipaz
     
     return render(request, 'recuperar_password.html')
 
+# Vista para interfaz.html (Dashboard/Panel de usuario)
 def interfaz(request):
     if 'user_id' not in request.session:
-        return redirect('inicio') # Redirigir al login si no hay sesión
-
-    if request.method == 'POST':
-        # Guardar usando los nombres exactos de tu models.py
-        Reservacion.objects.create(
-            nombre_completo=request.POST.get('name'),
-            email=request.POST.get('email'),
-            telefono=request.POST.get('phone'),
-            destino=request.POST.get('destination'),
-            fecha_visita=request.POST.get('date'),
-            numero_personas=request.POST.get('people') if request.POST.get('people') else 1,
-            comentarios=request.POST.get('message')
-        )
-        messages.success(request, '¡Reserva realizada con éxito!')
-        return redirect('index')
-
+        return redirect('inicio')  # Redirigir al login si no hay sesión
+    
     return render(request, 'interfaz.html')
 
-# 2. Al final de tu archivo, en la función index, TAMBIÉN BORRA:
-# from .models import Reserva  <-- BORRAR ESTA LÍNEA SI EXISTE
-
-    # 3. Si solo entra a ver la página (GET)
-    return render(request, 'index.html')
-
-# Resto de vistas
-def tur1(request):
-    return render(request, 'tur1.html')
-
-def tur2(request):
-    return render(request, 'tur2.html')
-
-def tur3(request):
-    return render(request, 'tur3.html')
-
-def tur4(request):
-    return render(request, 'tur4.html')
-
-def tur5(request):
-    return render(request, 'tur5.html')
-
-def tur6(request):
-    return render(request, 'tur6.html')
-
-def reservacion(request):
-
-    return render(request, 'reservacion.html')
-
+# Vista principal INDEX.HTML - Página de turismo con formulario de reserva
 def index(request):
     if request.method == 'POST':
-        # DEBES DEFINIR LAS VARIABLES AQUÍ (Esto es lo que falta)
-        nombre = request.POST.get('name')
-        email = request.POST.get('email')
-        telefono = request.POST.get('phone')
-        destino = request.POST.get('destination')
-        fecha = request.POST.get('date')
-        personas = request.POST.get('people')
-        mensaje = request.POST.get('message')
+        try:
+            # Capturar datos del formulario
+            nombre = request.POST.get('name')
+            email = request.POST.get('email')
+            telefono = request.POST.get('phone')
+            destino = request.POST.get('destination')
+            fecha = request.POST.get('date')
+            personas = request.POST.get('people')
+            mensaje = request.POST.get('message', '')
+            
+            # Validar que los campos obligatorios no estén vacíos
+            if not all([nombre, email, telefono, destino, fecha, personas]):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Todos los campos obligatorios deben estar llenos'
+                }, status=400)
+            
+            # Crear la reservación en la base de datos
+            reserva = Reservacion.objects.create(
+                nombre_completo=nombre,
+                email=email,
+                telefono=telefono,
+                destino=destino,
+                fecha_visita=fecha,
+                numero_personas=int(personas),
+                comentarios=mensaje
+            )
+            
+            print(f"✅ Reserva guardada exitosamente - ID: {reserva.id}")
+            print(f"   Nombre: {nombre}")
+            print(f"   Destino: {destino}")
+            print(f"   Fecha: {fecha}")
+            
+            # Respuesta exitosa en formato JSON
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Reserva guardada correctamente'
+            })
+            
+        except ValueError as ve:
+            print(f"❌ Error de valor: {ve}")
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Error en el formato de los datos'
+            }, status=400)
+            
+        except Exception as e:
+            print(f"❌ Error al guardar reserva: {e}")
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Error al procesar la reserva: {str(e)}'
+            }, status=500)
+    
+    # Si es GET, mostrar la página principal
+    return render(request, 'interfaz/index.html')
 
-        # Ahora sí, creamos el registro
-        Reservacion.objects.create(
-            nombre=nombre,        # Asegúrate que 'nombre' coincida con tu models.py
-            email=email,
-            telefono=telefono,
-            destino=destino,
-            fecha=fecha,
-            personas=personas,
-            mensaje=mensaje
-        )
-        return redirect('index')
+# Resto de vistas de destinos turísticos
+def tur1(request):
+    return render(request, 'interfaz/tur1.html')
 
-    # Para mostrar la tabla, recuerda pasar los datos
-    reservas = Reservacion.objects.all()
-    return render(request, 'index.html', {'mis_reservas': reservas})
+def tur2(request):
+    return render(request, 'interfaz/tur2.html')
 
+def tur3(request):
+    return render(request, 'interfaz/tur3.html')
 
+def tur4(request):
+    return render(request, 'interfaz/tur4.html')
 
+def tur5(request):
+    return render(request, 'interfaz/tur5.html')
+
+def tur6(request):
+    return render(request, 'interfaz/tur6.html')
+
+# Vista para ver todas las reservaciones (opcional - para admin)
+def reservacion(request):
+    if 'user_id' not in request.session:
+        return redirect('inicio')
+    
+    reservas = Reservacion.objects.all().order_by('-fecha_creacion')
+    return render(request, 'reservacion.html', {'reservas': reservas})
